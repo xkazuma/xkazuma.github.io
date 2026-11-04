@@ -1,0 +1,10 @@
+[
+  {
+    "id": "example-course",
+    "title": "（例）授業名",
+    "term": "2026年度 後期",
+    "description": "授業資料は暗号化して配置し、パスワードを知っている受講者のみ閲覧できます。",
+    "path": "/lectures/example-course/",
+    "published": false
+  }
+]
