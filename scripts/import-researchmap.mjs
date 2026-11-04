@@ -2,11 +2,15 @@
 /**
  * researchmap のエクスポートファイル（JSON Lines）を data/research/<category>.json に変換する。
  *
- * 使い方:
- *   npm run import:researchmap -- <ファイルまたはディレクトリ> [...] [--lang ja|en]
+ * researchmap の Web API は利用申請が前提のため使わない。データはエクスポート機能の出力だけを使う。
  *
- *   - researchmap のエクスポート画面で「json」形式を選び、ダウンロードした zip を展開して得た
- *     .jsonl / .json ファイル（またはそれを含むディレクトリ）を渡す。
+ * 使い方:
+ *   npm run import:researchmap -- <zip・ファイル・ディレクトリ> [...] [--lang ja|en]
+ *
+ *   - researchmap のエクスポート画面で「json」形式を選び、ダウンロードした zip をそのまま渡す。
+ *     zip のパスワードは実行時に入力する（環境変数 RESEARCHMAP_ZIP_PASSWORD でも可）。
+ *     展開した .jsonl / .json ファイル（またはそれを含むディレクトリ）を渡してもよい。
+ *   - zip はメモリ上で展開し、中身をディスクに書き出さない。
  *   - 入力に含まれる業績種別のファイルだけを上書きする（含まれない種別は触らない）。
  *   - display が "disclosed"（公開）以外の業績は出力しない。
  *   - 既存ファイルの label / order は引き継ぐ。
@@ -17,6 +21,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import readline from 'node:readline'
+import { readZip, ZipPasswordError } from './lib/read-zip.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUT_DIR = path.join(ROOT, 'data', 'research')
@@ -84,19 +90,58 @@ const otherLang = lang === 'ja' ? 'en' : 'ja'
 
 function usage(code, msg) {
   if (msg) console.error(msg)
-  console.error('usage: npm run import:researchmap -- <export.jsonl|dir> [...] [--lang ja|en]')
+  console.error('usage: npm run import:researchmap -- <export.zip|export.jsonl|dir> [...] [--lang ja|en]')
   process.exit(code)
 }
 
 // ---- 入力の読み込み ----
+const JSON_EXT = /\.(jsonl|json|ndjson)$/i
+
 function collectFiles(p) {
+  if (!fs.existsSync(p)) usage(1, `見つかりません: ${p}`)
   const st = fs.statSync(p)
   if (st.isDirectory()) return fs.readdirSync(p).sort().flatMap((f) => collectFiles(path.join(p, f)))
-  return /\.(jsonl|json|ndjson)$/i.test(p) ? [p] : []
+  return JSON_EXT.test(p) || /\.zip$/i.test(p) ? [p] : []
 }
 
-function parseFile(file) {
-  const text = fs.readFileSync(file, 'utf-8').replace(/^﻿/, '').trim()
+// zip のパスワード（環境変数 → 端末で非表示入力 → 標準入力の1行）
+async function askPassword() {
+  if (process.env.RESEARCHMAP_ZIP_PASSWORD) return process.env.RESEARCHMAP_ZIP_PASSWORD
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: process.stdin.isTTY })
+  if (process.stdin.isTTY) {
+    process.stdout.write('zip のパスワード（researchmap のエクスポート画面に表示）: ')
+    rl._writeToOutput = () => {} // 入力を表示しない
+  }
+  const pw = await new Promise((resolve) => rl.once('line', resolve))
+  rl.close()
+  if (process.stdin.isTTY) process.stdout.write('\n')
+  return pw.trim()
+}
+
+// 入力を {name, text} の一覧にする（zip は中の .jsonl / .json を取り出す）
+async function loadSources(files) {
+  const sources = []
+  for (const file of files) {
+    if (!/\.zip$/i.test(file)) {
+      sources.push({ name: file, text: fs.readFileSync(file, 'utf-8') })
+      continue
+    }
+    let entries
+    try {
+      entries = await readZip(fs.readFileSync(file), askPassword)
+    } catch (e) {
+      if (e instanceof ZipPasswordError) usage(1, `${file}: ${e.message}`)
+      throw e
+    }
+    for (const ent of entries) {
+      if (JSON_EXT.test(ent.name)) sources.push({ name: `${file}:${ent.name}`, text: ent.data.toString('utf-8') })
+    }
+  }
+  return sources
+}
+
+function parseFile(file, raw) {
+  const text = raw.replace(/^﻿/, '').trim()
   if (!text) return []
   // JSON 配列・単一オブジェクトにも対応
   if (text.startsWith('[')) return JSON.parse(text)
@@ -221,13 +266,15 @@ function toItem(type, b) {
 
 // ---- 変換 ----
 const files = inputs.flatMap(collectFiles)
-if (files.length === 0) usage(1, '読み込める .jsonl / .json ファイルがありません')
+if (files.length === 0) usage(1, '読み込める .zip / .jsonl / .json ファイルがありません')
+const sources = await loadSources(files)
+if (sources.length === 0) usage(1, 'zip の中に .jsonl / .json ファイルがありません')
 
 const byType = new Map()
 const profileRecs = new Map() // CV ページ用（経歴・学歴など）
 const stats = { read: 0, other: 0, hidden: 0, skipped: 0 }
-for (const file of files) {
-  for (const rec of parseFile(file)) {
+for (const { name: file, text } of sources) {
+  for (const rec of parseFile(file, text)) {
     stats.read++
     const { type, body } = normalizeRecord(rec, file)
     if (!type) {
