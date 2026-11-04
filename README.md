@@ -17,6 +17,11 @@ npm run preview
 
 `main` に push すると `.github/workflows/deploy.yml` がビルドして Pages に公開します。
 
+### 本番反映前の確認
+
+- **ローカル:** `npm run build && npm run preview` で本番と同じビルド結果を http://localhost:4173 で確認できます。
+- **PR:** PR を作るとビルドだけが走り（本番には反映されません）、ビルド結果が Actions の実行ページに Artifact `site-preview`（zip）として 7 日間保存されます。ダウンロードして展開し、`npx serve <展開先>` などで開けば確認できます。
+
 ## ディレクトリ構成
 
 ```

@@ -3,6 +3,8 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [main]
+  # PR ではビルドのみ行い、結果を Artifact (site-preview) として保存する（本番には反映しない）
+  pull_request:
   workflow_dispatch:
   # researchmap 自動同期などで定期再ビルドが必要になったら schedule を追加する
 
@@ -12,8 +14,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -29,12 +31,23 @@ jobs:
       - run: npm ci
       # 授業資料（Slidev のビルド・暗号化）を CI で行う場合は、ここで src/public/lectures/ に出力する
       - run: npm run build
+      - name: Upload preview (PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-preview
+          path: .vitepress/dist
+          include-hidden-files: true
+          retention-days: 7
       - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
       - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
         with:
           path: .vitepress/dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
