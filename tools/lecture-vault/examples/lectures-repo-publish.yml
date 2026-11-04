@@ -46,6 +46,9 @@ jobs:
           LECTURE_MASTER_KEY: ${{ secrets.LECTURE_MASTER_KEY }}
         run: |
           set -euo pipefail
+          # /lectures/ 配下はこのリポジトリが管理する。消した授業・ユーザ未設定の授業は公開をやめる
+          rm -rf site/src/public/lectures
+          mkdir -p site/src/public/lectures
           for course_dir in courses/*/; do
             course=$(basename "$course_dir")
             users=$(jq -c --arg c "$course" '.[$c] // empty' <<<"$LECTURE_USERS")
@@ -71,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/public/lectures
+          git add -A src/public/lectures
           if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
           git commit -m "Update encrypted lectures (${GITHUB_REPOSITORY}@${GITHUB_SHA::7})"
           git push
