@@ -55,11 +55,26 @@ async function handle(req, url, rel) {
     await dropKeys();
     return fetch(req);
   }
-  const keys = await getKeys().catch(() => null);
-  if (!keys) return isNav ? fetch(req) : new Response('Unauthorized', { status: 401 });
+  const rec = await getKeys().catch(() => null);
+  if (!rec || !rec.decks) return isNav ? fetch(req) : new Response('Unauthorized', { status: 401 });
 
-  for (const cand of candidates(rel, isNav)) {
-    const name = hex(await crypto.subtle.sign('HMAC', keys.nameKey, enc.encode(cand))).slice(0, 40);
+  // 授業トップ: ログイン中のユーザが見られる資料だけを一覧にする
+  if (rel === '' || rel === 'index.html') return page(200, rec.title, renderIndex(rec));
+
+  const slash = rel.indexOf('/');
+  const dir = slash < 0 ? rel : rel.slice(0, slash);
+  const inner = slash < 0 ? '' : rel.slice(slash + 1);
+  const deck = rec.decks[dir];
+  if (!deck) {
+    if (!isNav) return new Response('Forbidden', { status: 403 });
+    return page(403, rec.title, `<h1>この資料は閲覧できません</h1>
+    <p>${esc(rec.user ?? '')} さんには、この資料の閲覧権限がありません。別のユーザでログインする場合はログアウトしてください。</p>
+    <p><a href="${BASE}">資料一覧へ</a> · <a href="${BASE}?logout">ログアウト</a></p>`);
+  }
+  if (slash < 0 && isNav) return Response.redirect(url.pathname + '/' + url.search, 301);
+
+  for (const cand of candidates(inner, isNav)) {
+    const name = hex(await crypto.subtle.sign('HMAC', deck.nameKey, enc.encode(cand))).slice(0, 40);
     const res = await fetch(BASE + '_v/' + name);
     if (res.status === 404) continue;
     if (!res.ok) return new Response('Upstream error', { status: 502 });
@@ -67,7 +82,7 @@ async function handle(req, url, rel) {
     let body;
     try {
       body = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: blob.slice(0, 12), additionalData: enc.encode(cand) }, keys.encKey, blob.slice(12));
+        { name: 'AES-GCM', iv: blob.slice(0, 12), additionalData: enc.encode(cand) }, deck.encKey, blob.slice(12));
     } catch {
       // 再暗号化などで鍵が合わなくなった。鍵を捨ててログイン画面へ戻す。
       await dropKeys();
@@ -79,6 +94,36 @@ async function handle(req, url, rel) {
     });
   }
   return new Response('Not Found', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+}
+
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+function renderIndex(rec) {
+  const items = Object.entries(rec.decks)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/">${esc(d.title || dir)}</a></li>`)
+    .join('');
+  return `<h1>${esc(rec.title)}</h1>
+    <ul>${items || '<li>閲覧できる資料はまだありません。</li>'}</ul>
+    <footer>${esc(rec.user ?? '')} でログイン中 · <a href="${BASE}?logout">ログアウト</a></footer>`;
+}
+
+function page(status, title, body) {
+  const html = `<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>${esc(title)}</title>
+<style>
+  :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --link: #2563eb; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --link: #93c5fd; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem; }
+  h1 { font-size: 1.6rem; margin: 0 0 1.5rem; }
+  ul { padding-left: 1.2rem; line-height: 2; }
+  a { color: var(--link); }
+  p, footer { color: var(--muted); }
+  footer { margin-top: 3rem; font-size: .9rem; }
+</style></head><body><main>${body}</main></body></html>`;
+  return new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
 }
 
 // 探索するファイルの候補。ページ遷移なら SPA 用に上位の index.html へフォールバックする
