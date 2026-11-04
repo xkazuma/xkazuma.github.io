@@ -2,12 +2,12 @@
 # private リポジトリの .github/workflows/publish.yml としてコピーして使う。
 #
 # 想定する private リポジトリの構成:
-#   courses/<course-id>/course.json          {"title": "授業名"}
+#   courses/<course-id>/course.json          {"title": "授業名", "users": [...], "decks": {"<deck-id>": {"users": [...]}}}
 #   courses/<course-id>/<deck-id>/slides.md  Slidev のスライド（画像なども同じディレクトリに）
 #   package.json                             @slidev/cli と使うテーマを devDependencies に
 #
 # 必要な secrets（private リポジトリ側に設定）:
-#   LECTURE_USERS       {"<course-id>": {"<user>": "<password>", ...}, ...}
+#   LECTURE_USERS       {"<user>": "<password>", ...}（全授業共通のアカウント。誰が何を見られるかは course.json で決める）
 #   LECTURE_MASTER_KEY  openssl rand -base64 32 の出力（ユーザを失効させるときに作り直す）
 #   SITE_REPO_TOKEN     xkazuma/xkazuma.github.io の Contents に Read and write 権限を持つ fine-grained PAT
 name: Publish lectures
@@ -51,18 +51,17 @@ jobs:
           mkdir -p site/src/public/lectures
           for course_dir in courses/*/; do
             course=$(basename "$course_dir")
-            users=$(jq -c --arg c "$course" '.[$c] // empty' <<<"$LECTURE_USERS")
-            if [ -z "$users" ]; then echo "::warning::$course にユーザがいないのでスキップします"; continue; fi
-            title=$(jq -r '.title // empty' "$course_dir/course.json" 2>/dev/null || true)
+            if [ ! -f "$course_dir/course.json" ]; then echo "::warning::$course に course.json がないのでスキップします"; continue; fi
             for deck_dir in "$course_dir"*/; do
               [ -f "$deck_dir/slides.md" ] || continue
               deck=$(basename "$deck_dir")
               npx slidev build "$deck_dir/slides.md" \
                 --base "/lectures/$course/$deck/" --out "$PWD/build/$course/$deck"
             done
-            LECTURE_USERS="$users" node site/tools/lecture-vault/encrypt.mjs \
+            [ -d "build/$course" ] || continue
+            node site/tools/lecture-vault/encrypt.mjs \
               --in "build/$course" --out "site/src/public/lectures/$course" \
-              --base "/lectures/$course/" --title "${title:-$course}"
+              --base "/lectures/$course/" --config "$course_dir/course.json"
           done
           # 平文が混ざっていないことの簡易チェック（ビルド結果の index.html がそのまま入っていないか）
           if grep -rl --include='*.html' 'slidev' site/src/public/lectures/ ; then

@@ -107,18 +107,25 @@
         const kek = await crypto.subtle.deriveKey(
           { name: 'PBKDF2', hash: vault.kdf.hash, salt: unb64(s.salt), iterations: vault.kdf.iterations },
           pw, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
-        let master;
+        let payload;
         try {
-          master = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(s.iv), additionalData: enc.encode(BASE) }, kek, unb64(s.key));
-        } catch { master = null; }
-        if (!slot || !master) throw new Error('auth');
+          payload = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: unb64(s.iv), additionalData: enc.encode(BASE) }, kek, unb64(s.data))));
+        } catch { payload = null; }
+        if (!slot || !payload) throw new Error('auth');
 
-        const hk = await crypto.subtle.importKey('raw', master, 'HKDF', false, ['deriveKey']);
-        const hkdf = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: enc.encode(BASE), info: enc.encode(info) });
-        const encKey = await crypto.subtle.deriveKey(hkdf('lecture-vault/enc'), hk, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
-        const nameKey = await crypto.subtle.deriveKey(hkdf('lecture-vault/name'), hk, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-        // 取り出せない（non-extractable）鍵として保存する
-        await idb('readwrite', (st) => st.put({ encKey, nameKey, savedAt: Date.now() }, BASE));
+        // 見られる資料ごとに鍵を導出し、取り出せない（non-extractable）鍵として保存する
+        const decks = {};
+        for (const d of payload.decks) {
+          const hk = await crypto.subtle.importKey('raw', unb64(d.key), 'HKDF', false, ['deriveKey']);
+          const hkdf = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: enc.encode(`${BASE}${d.dir}/`), info: enc.encode(info) });
+          decks[d.dir] = {
+            title: d.title,
+            encKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/enc'), hk, { name: 'AES-GCM', length: 256 }, false, ['decrypt']),
+            nameKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/name'), hk, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']),
+          };
+        }
+        await idb('readwrite', (st) => st.put({ user, title: payload.title, decks, savedAt: Date.now() }, BASE));
 
         await swReady;
         say('読み込んでいます…', true);
