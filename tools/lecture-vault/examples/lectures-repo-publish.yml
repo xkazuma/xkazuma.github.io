@@ -1,0 +1,80 @@
+# 授業資料（Slidev ソース）を置く private リポジトリ用のワークフロー例。
+# private リポジトリの .github/workflows/publish.yml としてコピーして使う。
+#
+# 想定する private リポジトリの構成:
+#   courses/<course-id>/course.json          {"title": "授業名"}
+#   courses/<course-id>/<deck-id>/slides.md  Slidev のスライド（画像なども同じディレクトリに）
+#   package.json                             @slidev/cli と使うテーマを devDependencies に
+#
+# 必要な secrets（private リポジトリ側に設定）:
+#   LECTURE_USERS       {"<course-id>": {"<user>": "<password>", ...}, ...}
+#   LECTURE_MASTER_KEY  openssl rand -base64 32 の出力（ユーザを失効させるときに作り直す）
+#   SITE_REPO_TOKEN     xkazuma/xkazuma.github.io の Contents に Read and write 権限を持つ fine-grained PAT
+name: Publish lectures
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-lectures
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: xkazuma/xkazuma.github.io
+          token: ${{ secrets.SITE_REPO_TOKEN }}
+          path: site
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build and encrypt
+        env:
+          LECTURE_USERS: ${{ secrets.LECTURE_USERS }}
+          LECTURE_MASTER_KEY: ${{ secrets.LECTURE_MASTER_KEY }}
+        run: |
+          set -euo pipefail
+          # /lectures/ 配下はこのリポジトリが管理する。消した授業・ユーザ未設定の授業は公開をやめる
+          rm -rf site/src/public/lectures
+          mkdir -p site/src/public/lectures
+          for course_dir in courses/*/; do
+            course=$(basename "$course_dir")
+            users=$(jq -c --arg c "$course" '.[$c] // empty' <<<"$LECTURE_USERS")
+            if [ -z "$users" ]; then echo "::warning::$course にユーザがいないのでスキップします"; continue; fi
+            title=$(jq -r '.title // empty' "$course_dir/course.json" 2>/dev/null || true)
+            for deck_dir in "$course_dir"*/; do
+              [ -f "$deck_dir/slides.md" ] || continue
+              deck=$(basename "$deck_dir")
+              npx slidev build "$deck_dir/slides.md" \
+                --base "/lectures/$course/$deck/" --out "$PWD/build/$course/$deck"
+            done
+            LECTURE_USERS="$users" node site/tools/lecture-vault/encrypt.mjs \
+              --in "build/$course" --out "site/src/public/lectures/$course" \
+              --base "/lectures/$course/" --title "${title:-$course}"
+          done
+          # 平文が混ざっていないことの簡易チェック（ビルド結果の index.html がそのまま入っていないか）
+          if grep -rl --include='*.html' 'slidev' site/src/public/lectures/ ; then
+            echo "::error::暗号化されていない Slidev の HTML が出力に含まれています"; exit 1
+          fi
+
+      - name: Push encrypted output to the site repository
+        working-directory: site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A src/public/lectures
+          if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
+          git commit -m "Update encrypted lectures (${GITHUB_REPOSITORY}@${GITHUB_SHA::7})"
+          git push

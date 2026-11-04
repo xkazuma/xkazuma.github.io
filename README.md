@@ -76,3 +76,5 @@ draft: false         # true にすると一覧に出ない
 ### 授業資料
 
 暗号化済みの資料は `src/public/lectures/` 配下に置きます（ビルド時に `/lectures/` へそのままコピー）。`/lectures/` は VitePress のルーティング対象外で、サイト内リンクは `target="_self"` で通常遷移させます。一覧は `data/courses.json` の `published: true` の項目が「授業」ページに表示されます。
+
+授業資料のソースは private リポジトリ `xkazuma/xkazuma-lectures` にあり、そちらの CI が Slidev のビルドと暗号化を行って `src/public/lectures/` に push します。暗号化の仕組みと使い方は [tools/lecture-vault/README.md](tools/lecture-vault/README.md) を参照してください。
