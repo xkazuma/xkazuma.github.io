@@ -76,4 +76,9 @@ jobs:
           git add -A src/public/lectures
           if git diff --cached --quiet; then echo "変更なし"; exit 0; fi
           git commit -m "Update encrypted lectures (${GITHUB_REPOSITORY}@${GITHUB_SHA::7})"
-          git push
+          # 実行中にサイト側の main が進んでいたら取り込んでから push する（変更は src/public/lectures だけなので衝突しない）
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          echo "::error::サイトリポジトリへの push に失敗しました"; exit 1
