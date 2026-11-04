@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   lang: 'ja-JP',
   title: 'xkzm.me',
-  description: 'Kazuma Kusu のポートフォリオ：研究・事業・授業・活動の記録',
+  description: 'Kazuma Kusu のポートフォリオ：研究・事業・資料',
   srcDir: 'src',
   cleanUrls: true,
   lastUpdated: true,

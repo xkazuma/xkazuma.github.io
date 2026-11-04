@@ -3,8 +3,7 @@ layout: home
 
 hero:
   name: Kazuma Kusu
-  text: 研究・事業・授業の記録
-  tagline: プライベートや大学、事業での活動をまとめるポートフォリオです。
+  text: 研究・事業・資料
   actions:
     - theme: brand
       text: About
