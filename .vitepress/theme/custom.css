@@ -35,3 +35,5 @@ ul.xk-list, .vp-doc ul.xk-list { list-style: none; padding: 0 !important; margin
   .vp-doc .xk-cv-table th, .vp-doc .xk-cv-table td { display: block; width: auto; padding: 0; }
   .vp-doc .xk-cv-table td { padding-bottom: .6rem; }
 }
+.vp-doc ol.xk-cv-pubs { padding-left: 2.2rem; }
+.vp-doc ol.xk-cv-pubs > li { margin: .45rem 0; line-height: 1.6; }

@@ -1,6 +1,6 @@
 ---
 title: CV
-outline: [2, 2]
+outline: [2, 3]
 ---
 
 # CV
@@ -10,4 +10,5 @@ outline: [2, 2]
 
 ## 業績
 
-論文・講演・研究課題・受賞などの一覧は[研究ページ](/research/)をご覧ください。
+<!-- data/research/*.json（研究ページと同じデータ）を表示します -->
+<CvAchievements />
