@@ -1,0 +1,23 @@
+:root {
+  --vp-c-brand-1: #3f6f8f;
+  --vp-c-brand-2: #4f84a8;
+  --vp-c-brand-3: #5f97bd;
+  --vp-c-brand-soft: rgba(63, 111, 143, 0.14);
+  --vp-font-family-base: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+}
+.dark {
+  --vp-c-brand-1: #8fbcd9;
+  --vp-c-brand-2: #74a8cb;
+  --vp-c-brand-3: #5f97bd;
+  --vp-c-brand-soft: rgba(143, 188, 217, 0.16);
+}
+
+/* 一覧系コンポーネント共通 */
+ul.xk-list, .vp-doc ul.xk-list { list-style: none; padding: 0 !important; margin: 1rem 0; }
+.xk-list > li { margin: 0 !important; padding: .9rem 0; border-bottom: 1px solid var(--vp-c-divider); }
+.xk-list > li:last-child { border-bottom: none; }
+.xk-meta { font-size: .85rem; color: var(--vp-c-text-2); }
+.xk-title { font-weight: 600; }
+.xk-tags { display: inline-flex; gap: .35rem; flex-wrap: wrap; margin-left: .5rem; }
+.xk-tag { font-size: .75rem; padding: 0 .45rem; border-radius: 999px; background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); }
+.xk-empty { color: var(--vp-c-text-2); font-style: italic; }
