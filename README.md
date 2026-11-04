@@ -32,10 +32,14 @@ npm run preview
     research.data.ts     data/research/*.json を読み込み
   theme/                 デフォルトテーマの拡張・Vue コンポーネント
 data/
-  research/*.json        研究業績（researchmap の内容をもとに更新）
+  research/*.json        研究業績（researchmap のエクスポートから変換して上書き）
+  profile.json           CV ページ用のプロフィール（同上）
   courses.json           授業資料の一覧
+scripts/
+  import-researchmap.mjs researchmap エクスポート(zip/JSONL) → data/research/*.json・data/profile.json 変換
+  lib/read-zip.mjs       パスワード付き zip の読み込み（依存なし）
 src/                     ページ（Markdown）
-  index.md  about.md
+  index.md  about.md  cv.md
   research/  activities/  teaching/
   public/                そのまま dist にコピーされる静的ファイル（CNAME など）
     lectures/            授業資料（暗号化済み Slidev SPA）。VitePress の管轄外
@@ -58,9 +62,24 @@ draft: false         # true にすると一覧に出ない
 ---
 ```
 
-### 研究業績（researchmap の内容）
+### 研究業績（researchmap 連携）
 
-`data/research/<category>.json` を以下の形式で置くと「研究」ページに表示されます。researchmap の内容（エクスポートなど）をこのスキーマに整形して置きます。`_meta.json` には `source` と `updatedAt`（最終同期日時）を入れます。
+researchmap の API は利用申請が前提のため使わず、**エクスポート機能で手動更新**します。
+
+1. researchmap にログインし、エクスポート画面で形式「json」を選び、研究者情報と業績をすべてチェックしてエクスポート。
+2. 状態が「完了」になったら zip をダウンロードし、画面に表示されたパスワードを控える。zip は展開しなくてよい。
+3. zip をそのまま渡して変換する（パスワードは実行時に聞かれる。入力は画面に表示されない）:
+
+   ```sh
+   npm run import:researchmap -- ~/Downloads/rm_researchers20261104.zip            # 日本語優先（既定）
+   npm run import:researchmap -- ~/Downloads/rm_researchers20261104.zip --lang en  # 英語優先
+   ```
+
+   入力に含まれる種別の `data/research/<種別>.json` だけが上書きされ、`_meta.json` の `updatedAt` が更新されます。researchmap 上で「公開」（`display` が `disclosed`）の業績だけを出力します。経歴・学歴・学位・研究分野・担当科目・所属学協会は `data/profile.json` に書き出され、CV ページ（`/cv`）に表示されます。こちらも公開設定の項目だけで、連絡先・ORCID などの ID・画像・URL は出力しません（対象種別は `scripts/import-researchmap.mjs` の `RESEARCH_TYPES` / `PROFILE_TYPES`）。
+   zip はメモリ上で展開され、中身はディスクに書き出されません。展開済みの `.jsonl` やそのフォルダを渡すこともできます（ZipCrypto 以外の AES 暗号化 zip は非対応なので、その場合は展開してから渡す）。
+4. `npm run dev` で表示を確認し、`data/research/` と `data/profile.json` の変更だけをコミットして push する。zip や展開したファイルはリポジトリの外に置き、コミットしない（念のため `*.zip` と `researchmap-export/` は `.gitignore` 済み）。
+
+`data/research/<category>.json` は以下の形式です（手で編集しても構いません）。`_meta.json` には `source` と `updatedAt`（最終同期日時）を入れます。
 
 ```json
 {

@@ -2,5 +2,604 @@
   "category": "published_papers",
   "label": "論文",
   "order": 1,
-  "items": []
+  "items": [
+    {
+      "title": "Repetition path destination index for repeated graph traversal using adjacency lists",
+      "authors": [
+        "Kazuma Kusu",
+        "Takahiro Komamizu",
+        "Kenji Hatano"
+      ],
+      "venue": "同志社大学ハリス理化学研究報告 66(3) 68-80",
+      "date": "2025-10",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "RICGraph: A Recipe-Ingredient-Compound Graph for Estimating the Nutritional Value of Recipes",
+      "authors": [
+        "Naoki Yoshimaru",
+        "Kazuma Kusu",
+        "Yusuke Kimura",
+        "Kenji Hatano"
+      ],
+      "venue": "2025 IEEE 41st International Conference on Data Engineering Workshops (ICDEW) 274-281",
+      "date": "2025-05-19",
+      "url": "https://doi.org/10.1109/icdew67478.2025.00039",
+      "doi": "10.1109/icdew67478.2025.00039"
+    },
+    {
+      "title": "Construction of Ingredient Embedding Considering Both Cooking Recipes and Their Ingredients",
+      "authors": [
+        "Naoki Yoshimaru",
+        "Kazuma Kusu",
+        "Yusuke Kimura",
+        "Hidetsugu Nanba",
+        "Kenji Hatano"
+      ],
+      "venue": "2024 IEEE International Conference on Big Data and Smart Computing (BigComp)",
+      "date": "2024-02-18",
+      "url": "https://doi.org/10.1109/bigcomp60711.2024.00025",
+      "doi": "10.1109/bigcomp60711.2024.00025"
+    },
+    {
+      "title": "レビューの要約を目的とした単語の意味領域に基づく上位語選択",
+      "authors": [
+        "渡辺 一生",
+        "楠 和馬",
+        "吉丸 直希",
+        "波多野 賢治"
+      ],
+      "venue": "第15回データ工学と情報マネジメントに関するフォーラム予稿集(1b-5-5)",
+      "date": "2023-03"
+    },
+    {
+      "title": "化合物情報に基づく食材の表現学習",
+      "authors": [
+        "吉丸 直希",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第15回データ工学と情報マネジメントに関するフォーラム予稿集(5b-8-4)",
+      "date": "2023-03"
+    },
+    {
+      "title": "Ingredient Embeddings Constructed by Biased Random Walk on Ingredient-Compound Graph",
+      "authors": [
+        "Naoki Yoshimaru",
+        "Kazuma Kusu",
+        "Yusuke Kimura",
+        "Kenji Hatano"
+      ],
+      "venue": "Procedia Computer Science 225 3948-3957",
+      "date": "2023",
+      "url": "https://doi.org/10.1016/j.procs.2023.10.390",
+      "doi": "10.1016/j.procs.2023.10.390"
+    },
+    {
+      "title": "Towards Efficient Data Access Through Multiple Relationship in Graph-Structured Digital Archives",
+      "authors": [
+        "Kazuma Kusu",
+        "Takahiro Komamizu",
+        "Kenji Hatano"
+      ],
+      "venue": "From Born-Physical to Born-Virtual: Augmenting Intelligence in Digital Libraries. ICADL 2022. Lecture Notes in Computer Science 13636 377-391",
+      "date": "2022-12",
+      "url": "https://doi.org/10.1007/978-3-031-21756-2_29",
+      "doi": "10.1007/978-3-031-21756-2_29",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "A Dialogue Robot System to Improve Credibility in Sightseeing Spot Recommendations",
+      "authors": [
+        "Naoki Yoshimaru",
+        "Tomohiro Masuda",
+        "Hyejin Hong",
+        "Yusei Tanaka",
+        "Motoharu Okuma",
+        "Nagihiro Matsumoto",
+        "Kazuma Kusu",
+        "Takamasa Iio",
+        "Kenji Hatano"
+      ],
+      "venue": "The Proceedings of the Dialogue Robot Competition 2022 abs/2210.11223",
+      "date": "2022-10",
+      "url": "https://doi.org/10.48550/arXiv.2210.11223",
+      "doi": "10.48550/arXiv.2210.11223"
+    },
+    {
+      "title": "Towards Constructing Destination Node Index for Repetition Paths",
+      "authors": [
+        "Kazuma Kusu",
+        "Takahiro Komamizu",
+        "Kenji Hatano"
+      ],
+      "venue": "情報処理学会研究報告 2022-DBS-175(15)",
+      "date": "2022-09",
+      "note": "主要な業績"
+    },
+    {
+      "title": "単語の概念関係を考慮したレビューの評価観点自動抽出手法",
+      "authors": [
+        "小森 雄太",
+        "木村 優介",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会第 83 回全国大会予稿集",
+      "date": "2021-03"
+    },
+    {
+      "title": "Automatic Terminology Extraction using A Dependency-Graph in NLP",
+      "authors": [
+        "Yusuke Kimura",
+        "Kazuma Kusu",
+        "Kenji Hatano",
+        "Tokiya Baba"
+      ],
+      "venue": "Proceedings of the 9th World Congress on Information and Communication Technologies 411-421",
+      "date": "2021-03",
+      "url": "https://doi.org/10.1007/978-3-030-73603-3_38",
+      "doi": "10.1007/978-3-030-73603-3_38",
+      "note": "査読有り"
+    },
+    {
+      "title": "A Hub-based Graph Management for Efficient Repetition Path Traversing",
+      "authors": [
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "2021 IEEE International Conference on Big Data and Smart Computing (BigComp) 188-191",
+      "date": "2021-01",
+      "url": "https://doi.org/10.1109/bigcomp51126.2021.00043",
+      "doi": "10.1109/bigcomp51126.2021.00043",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "複雑ネットワークにおける効率的な反復走査のための経路索引構築法",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会研究報告 2020-DBS-172(9)",
+      "date": "2020-12",
+      "note": "主要な業績"
+    },
+    {
+      "title": "深層学習における学習曲線予測の効率化",
+      "authors": [
+        "リュウ ショウウ",
+        "楠 和馬",
+        "寺本 優香",
+        "波多野 賢治"
+      ],
+      "venue": "2020年度電気・情報関係学会北陸支部連合大会講演論文集 2020 F2-4-3",
+      "date": "2020-09",
+      "url": "https://jglobal.jst.go.jp/detail?JGLOBAL_ID=202102222159797185",
+      "note": "主要な業績"
+    },
+    {
+      "title": "単語埋め込みと名詞句の共起グラフを用いた教師なしキーフレーズ抽出手法の提案",
+      "authors": [
+        "木村 優介",
+        "楠 和馬",
+        "寺本 優香",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会研究報告 2020-IFAT-140(2)",
+      "date": "2020-09",
+      "url": "https://jglobal.jst.go.jp/detail?JGLOBAL_ID=202002298712155750"
+    },
+    {
+      "title": "物体検出技術を用いた古典籍画像からのテキスト領域切り出し手法",
+      "authors": [
+        "吉満 匡展",
+        "楠 和馬",
+        "木村 優介",
+        "寺本 優香",
+        "波多野 賢治"
+      ],
+      "venue": "電子情報通信学会 2020 年総合大会",
+      "date": "2020-03"
+    },
+    {
+      "title": "係り受け構解析を用いたドメイン固有のキーワード抽出手法の提案",
+      "authors": [
+        "木村 優介",
+        "楠 和馬",
+        "馬場 睦也",
+        "波多野 賢治"
+      ],
+      "venue": "電子情報通信学会 2020 年総合大会",
+      "date": "2020-03"
+    },
+    {
+      "title": "クエリログの部分的利用を考慮したグラフの集約演算高速化",
+      "authors": [
+        "平方 俊行",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第12回データ工学と情報マネジメントに関するフォーラム予稿集",
+      "date": "2020-03"
+    },
+    {
+      "title": "音素単位の分散表現に基づくオノマトペ辞書構築法の提案",
+      "authors": [
+        "馬場 睦也",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第12回データ工学と情報マネジメントに関するフォーラム予稿集",
+      "date": "2020-03"
+    },
+    {
+      "title": "部分グラフ検索高速化のためのハブ節点を考慮した関係辺の再帰走査法",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第12回データ工学と情報マネジメントに関するフォーラム予稿集",
+      "date": "2020-03",
+      "note": "主要な業績"
+    },
+    {
+      "title": "Recurrent Path Index for Efficient Graph Traversal",
+      "authors": [
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "2019 IEEE International Conference on Big Data (Big Data) 6107-6110",
+      "date": "2019-12",
+      "url": "https://doi.org/10.1109/BigData47090.2019.9006295",
+      "doi": "10.1109/BigData47090.2019.9006295",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "ネイティブグラフデータベースにおける再帰的走査の効率化に向けた経路管理方法の提案",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会研究報告 2019-DBS-169(11)",
+      "date": "2019-09",
+      "note": "主要な業績"
+    },
+    {
+      "title": "網羅性を有する食材オントロジの自動構築法",
+      "authors": [
+        "窪田 茜",
+        "馬場 睦也",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 11 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2019-03"
+    },
+    {
+      "title": "著者の貢献度に基づく単一学術情報リポジトリにおける名寄せ手法の提案",
+      "authors": [
+        "村田 海優",
+        "楠 和馬",
+        "寺本 優香",
+        "リュウ ショウウ",
+        "波多野 賢治"
+      ],
+      "venue": "IEICE2019 総合大会 ISS 特別企画「学生ポスターセッション」",
+      "date": "2019-03"
+    },
+    {
+      "title": "オノマトペパタンと音韻規則を適用した未知語処理法の提案",
+      "authors": [
+        "馬場 睦也",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 11 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2019-03"
+    },
+    {
+      "title": "人間関係を考慮したビジネスメール自動修正システムの構築",
+      "authors": [
+        "寺本 優香",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 11 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2019-03"
+    },
+    {
+      "title": "属性を用いた問合せの効率化に向けたグラフデータベースシステムの併用",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 11 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2019-03",
+      "note": "主要な業績"
+    },
+    {
+      "title": "Combining Two Types of Database System for Managing Property Graph Data",
+      "authors": [
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "2018 IEEE International Conference on Big Data (Big Data) 5349-5351",
+      "date": "2018-12",
+      "url": "https://doi.org/10.1109/BigData.2018.8622050",
+      "doi": "10.1109/BigData.2018.8622050",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "An Approach for Unknown Word Processing based on Japanese Phonological Rules",
+      "authors": [
+        "Tokiya Baba",
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "Proceedings of the 20th International Conference on Information Integration and Web-based Applications & Services 350-354",
+      "date": "2018-11",
+      "url": "https://doi.org/10.1145/3282373.3282853",
+      "doi": "10.1145/3282373.3282853",
+      "note": "査読有り"
+    },
+    {
+      "title": "Evaluating Usefulness of Reviews based on Evaluation Standpoints of Consumers",
+      "authors": [
+        "Tomoya Kambara",
+        "Shohei Okamoto",
+        "Yuka Teramoto",
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "Proceedings of the 10th International Conference on Management of Emergent Digital EcoSystems 110-117",
+      "date": "2018-09",
+      "url": "https://doi.org/10.1145/3281375.3281390",
+      "doi": "10.1145/3281375.3281390",
+      "note": "査読有り"
+    },
+    {
+      "title": "日本語の音韻変化規則に基づく未知語処理法の提案",
+      "authors": [
+        "馬場 睦也",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 17 回情報科学技術フォーラム (FIT2018) 講演論文集",
+      "date": "2018-09"
+    },
+    {
+      "title": "敬語及び形態素に着目したビジネスメール送受信者間における親疎関係判定モデルの構築",
+      "authors": [
+        "寺本 優香",
+        "楠 和馬",
+        "蒲原 智也",
+        "波多野 賢治"
+      ],
+      "venue": "第 10 回データ工学と情報マネジメントに関するフォーラム (DEIM2018) 論文集",
+      "date": "2018-03"
+    },
+    {
+      "title": "逐次的親密度推定に向けた発話対の親疎判別法の提案",
+      "authors": [
+        "木下 泰輝",
+        "楠 和馬",
+        "蒲原 智也",
+        "波多野 賢治"
+      ],
+      "venue": "言語処理学会第 24 回年次大会 (NLP2018) 論文集",
+      "date": "2018-03"
+    },
+    {
+      "title": "アイテムの評価観点を用いたレビューの有用性判定",
+      "authors": [
+        "岡本 章平",
+        "寺本 優香",
+        "楠 和馬",
+        "蒲原 智也",
+        "波多野 賢治"
+      ],
+      "venue": "2018 年度電子情報通信学会総合大会講演論文集 2018",
+      "date": "2018-03",
+      "url": "https://jglobal.jst.go.jp/detail?JGLOBAL_ID=201802291347033503"
+    },
+    {
+      "title": "Graph Partitioning Approach for Efficient Dependency Analysis with Graph Database System",
+      "authors": [
+        "Kazuma Kusu"
+      ],
+      "venue": "International Journal on Advances in Networks and Services, Vol. 10 No. 3&4 82-91",
+      "date": "2017-12-31",
+      "url": "http://www.iariajournals.org/networks_and_services/",
+      "note": "査読有り / 招待有り / 主要な業績"
+    },
+    {
+      "title": "Constructing a judging model of closeness in Japanese business relations",
+      "authors": [
+        "Yuka Teramoto",
+        "Kazuma Kusu",
+        "Takamitsu Shioi",
+        "Kenji Hatano"
+      ],
+      "venue": "Proceedings - 2017 International Conference on Culture and Computing, Culture and Computing 2017 2017- 49-54",
+      "date": "2017-12-19",
+      "url": "https://doi.org/10.1109/Culture.and.Computing.2017.47",
+      "doi": "10.1109/Culture.and.Computing.2017.47",
+      "note": "査読有り"
+    },
+    {
+      "title": "Searching cooking recipes by focusing on common ingredients",
+      "authors": [
+        "Kazuma Kusu",
+        "Hyuk-In Choi",
+        "Tomoya Kambara",
+        "Taiki Kinoshita",
+        "Takamitsu Shioi",
+        "Kenji Hatano"
+      ],
+      "venue": "iiWAS '17: Proceedings of the 19th International Conference on Information Integration and Web-based Applications & Services 95-101",
+      "date": "2017-12-04",
+      "url": "https://doi.org/10.1145/3151759.3151797",
+      "doi": "10.1145/3151759.3151797",
+      "note": "査読有り"
+    },
+    {
+      "title": "基準レシピからの差分に基づいた料理レシピ推薦によるレパートリ拡大法の提案",
+      "authors": [
+        "蒲原 智也",
+        "楠 和馬",
+        "崔 赫仁",
+        "木下 泰輝",
+        "塩井 隆円",
+        "波多野 賢治"
+      ],
+      "venue": "電子情報通信学会技術研究報告 117(374) 121-125",
+      "date": "2017-12",
+      "url": "http://ci.nii.ac.jp/naid/40021433326"
+    },
+    {
+      "title": "アクセスパタンを利用した同一節点へのグラフ走査回数の削減法",
+      "authors": [
+        "楠 和馬",
+        "久米 出",
+        "波多野 賢治"
+      ],
+      "venue": "2017 年度情報処理学会関西支部 支部大会 6p",
+      "date": "2017-09",
+      "url": "http://ci.nii.ac.jp/naid/40021349592"
+    },
+    {
+      "title": "Calculating cooking recipe's difficulty based on cooking activities",
+      "authors": [
+        "Kazuma Kusu",
+        "Nozomi Makino",
+        "Takamitsu Shioi",
+        "Kenji Hatano"
+      ],
+      "venue": "ACM International Conference Proceeding Series 129477 19-24",
+      "date": "2017-08-20",
+      "url": "https://doi.org/10.1145/3106668.3106673",
+      "doi": "10.1145/3106668.3106673",
+      "note": "査読有り"
+    },
+    {
+      "title": "A Node Access Frequency based Graph Partitioning Technique for Efficient Dynamic Dependency Analysis",
+      "authors": [
+        "Kazuma Kusu",
+        "Izuru Kume",
+        "Kenji Hatano"
+      ],
+      "venue": "Proceeding of the Ninth International Conferences on Advances in Multimedia (MMEDIA 2017) 73-78",
+      "date": "2017-04",
+      "url": "https://www.thinkmind.org/index.php?view=article&articleid=mmedia_2017_4_40_58010",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "メール送受信者感の親疎関係判定モデルの構築",
+      "authors": [
+        "寺本 優香",
+        "塩井 隆円",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 9 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2017-03"
+    },
+    {
+      "title": "調理動作に基づく料理レシピ検索のための難易度算出法の提案",
+      "authors": [
+        "牧野 望",
+        "塩井 隆円",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 9 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2017-03"
+    },
+    {
+      "title": "多値S-P表 : 試験の得点とその分布を利用した生徒の授業に対する理解度把握手法の提案",
+      "authors": [
+        "福島 紫織",
+        "塩井 隆円",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 9 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2017-03"
+    },
+    {
+      "title": "メニューごとの共通食材に着目した料理レシピ検索手法の提案",
+      "authors": [
+        "崔 赫仁",
+        "塩井 隆円",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "第 9 回データ工学と情報マネジメントに関するフォーラム",
+      "date": "2017-03"
+    },
+    {
+      "title": "プログラムの動的解析効率化のための参照頻度を考慮したグラフ属性分割格納法",
+      "authors": [
+        "楠 和馬",
+        "久米出",
+        "波多野 賢治"
+      ],
+      "venue": "第9回データ工学と情報マネジメントに関するフォーラム （第15回日本データベース学会年次大会）",
+      "date": "2017-03",
+      "note": "主要な業績"
+    },
+    {
+      "title": "A Trace Partitioning Approach for Memory Efficiency on a Trace Analysis Environment",
+      "authors": [
+        "Kazuma Kusu",
+        "Izuru Kume",
+        "Kenji Hatano"
+      ],
+      "venue": "2016 4th Intl Conf on Applied Computing and Information Technology/3rd Intl Conf on Computational Science/Intelligence and Applied Informatics/1st Intl Conf on Big Data, Cloud Computing, Data Science & Engineering (ACIT-CSII-BCD) 133-140",
+      "date": "2016-12",
+      "url": "https://doi.org/10.1109/ACIT-CSII-BCD.2016.35",
+      "doi": "10.1109/ACIT-CSII-BCD.2016.35",
+      "note": "査読有り / 主要な業績"
+    },
+    {
+      "title": "デバッグ支援を目的とした大域的動的依存性解析の効率化",
+      "authors": [
+        "楠 和馬",
+        "久米出",
+        "波多野 賢治"
+      ],
+      "venue": "FIT2016 情報科学技術フォーラム 講演論文集第 1 分冊, B-017",
+      "date": "2016-09",
+      "note": "主要な業績"
+    },
+    {
+      "title": "グラフ処理を用いたトレース解析システムの構築",
+      "authors": [
+        "楠 和馬",
+        "久米出",
+        "波多野 賢治"
+      ],
+      "venue": "2016 年度電子情報通信学会総合大会, D-3-3",
+      "date": "2016-03",
+      "note": "主要な業績"
+    },
+    {
+      "title": "CSJを用いた話者交代時の発話特徴抽出",
+      "authors": [
+        "楠和馬",
+        "奥村紀之"
+      ],
+      "venue": "情報処理学会第76回全国大会 2-469-2-470",
+      "date": "2014-03"
+    },
+    {
+      "title": "話者の負担を考慮した話者識別と音響モデルの検討",
+      "authors": [
+        "楠和馬",
+        "奥村紀之"
+      ],
+      "venue": "情報処理学会第75回全国大会 2-499-2-500",
+      "date": "2013-03"
+    }
+  ]
 }
