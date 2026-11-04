@@ -32,7 +32,7 @@ npm run preview
     research.data.ts     data/research/*.json を読み込み
   theme/                 デフォルトテーマの拡張・Vue コンポーネント
 data/
-  research/*.json        研究業績（researchmap から自動取得して上書きする想定）
+  research/*.json        研究業績（researchmap の内容をもとに更新）
   courses.json           授業資料の一覧
 src/                     ページ（Markdown）
   index.md  about.md
@@ -58,9 +58,9 @@ draft: false         # true にすると一覧に出ない
 ---
 ```
 
-### 研究業績（researchmap 連携）
+### 研究業績（researchmap の内容）
 
-`data/research/<category>.json` を以下の形式で置くと「研究」ページに表示されます。researchmap からの自動取得は、このスキーマに正規化して書き出します。`_meta.json` には `source` と `updatedAt`（最終同期日時）を入れます。
+`data/research/<category>.json` を以下の形式で置くと「研究」ページに表示されます。researchmap の内容（エクスポートなど）をこのスキーマに整形して置きます。`_meta.json` には `source` と `updatedAt`（最終同期日時）を入れます。
 
 ```json
 {

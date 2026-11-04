@@ -13,7 +13,7 @@ hero:
 
 features:
   - title: 研究
-    details: 論文・発表・研究課題などの業績。researchmap の情報をもとに自動更新します。
+    details: 論文・発表・研究課題などの業績。researchmap に掲載している内容をまとめています。
     link: /research/
     linkText: 業績を見る
   - title: 事業

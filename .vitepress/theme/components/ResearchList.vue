@@ -10,7 +10,7 @@ const total = data.categories.reduce((n, c) => n + c.items.length, 0)
     <template v-if="data.updatedAt"> ・ 最終同期 {{ data.updatedAt }}</template>
   </p>
   <p v-if="total === 0" class="xk-empty">
-    researchmap からの自動取得を準備中です。最新の業績は researchmap をご覧ください。
+    業績一覧を準備中です。最新の業績は researchmap をご覧ください。
   </p>
   <template v-for="cat in data.categories" :key="cat.category">
     <section v-if="cat.items.length">
