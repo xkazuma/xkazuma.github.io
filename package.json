@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "import:researchmap": "node scripts/import-researchmap.mjs"
   },
   "repository": {
     "type": "git",

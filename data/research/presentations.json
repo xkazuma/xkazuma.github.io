@@ -2,5 +2,32 @@
   "category": "presentations",
   "label": "講演・口頭発表",
   "order": 2,
-  "items": []
+  "items": [
+    {
+      "title": "Developing a Knowledge-Sharing Platform to Support Child Development Planning",
+      "authors": [
+        "Kazuma Kusu"
+      ],
+      "venue": "Graph Database in Practice 2024",
+      "date": "2024-11-30"
+    },
+    {
+      "title": "SQLではじめるデータ分析入門講座",
+      "authors": [
+        "波多野賢治",
+        "楠和馬"
+      ],
+      "venue": "技術情報協会セミナー",
+      "date": "2023-07-13"
+    },
+    {
+      "title": "Adjacency List and Path Index-based Repeated Traversal Framework",
+      "authors": [
+        "Kazuma Kusu",
+        "Kenji Hatano"
+      ],
+      "venue": "Graph Database in Practice",
+      "date": "2022-12-17"
+    }
+  ]
 }

@@ -18,6 +18,7 @@ export default defineConfig({
     siteTitle: 'xkzm.me',
     nav: [
       { text: 'About', link: '/about' },
+      { text: 'CV', link: '/cv' },
       { text: '研究', link: '/research/', activeMatch: '^/research/' },
       { text: '活動ログ', link: '/activities/', activeMatch: '^/activities/' },
       { text: '授業', link: '/teaching/', activeMatch: '^/teaching/' },

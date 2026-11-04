@@ -1,0 +1,317 @@
+{
+  "name": {
+    "ja": "楠 和馬",
+    "en": "Kazuma Kusu"
+  },
+  "affiliations": [
+    {
+      "affiliation": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      },
+      "section": {
+        "ja": "データサイエンス学部",
+        "en": "Faculty of Data Science"
+      },
+      "job": {
+        "ja": "助教",
+        "en": "Research Associate"
+      }
+    }
+  ],
+  "degrees": [
+    {
+      "degree": {
+        "ja": "博士（文化情報学）",
+        "en": "Doctor of Culture and Information Science"
+      },
+      "institution": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "date": "2026-03"
+    },
+    {
+      "degree": {
+        "ja": "修士（文化情報学）",
+        "en": "Master of Culture and Information Science"
+      },
+      "institution": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "date": "2018-03"
+    },
+    {
+      "degree": {
+        "ja": "学士（文化情報学）",
+        "en": "Bachelor of Culture and Information Science"
+      },
+      "institution": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "date": "2016-03"
+    },
+    {
+      "degree": {
+        "ja": "準学士",
+        "en": "Associate of Science"
+      },
+      "institution": {
+        "ja": "香川高等専門学校",
+        "en": "National Institute of Technology, Kagawa College"
+      },
+      "date": "2014-03"
+    }
+  ],
+  "researchInterests": [
+    {
+      "ja": "グラフデータベース",
+      "en": "Graph databases"
+    },
+    {
+      "ja": "データベースシステム",
+      "en": "Database System"
+    },
+    {
+      "ja": "問合せ処理",
+      "en": "Query processing"
+    },
+    {
+      "ja": "データ工学",
+      "en": "Data Engineering"
+    },
+    {
+      "ja": "ネットワーク科学",
+      "en": "Network science"
+    }
+  ],
+  "researchAreas": [
+    {
+      "discipline": {
+        "ja": "情報通信",
+        "en": "Informatics"
+      },
+      "field": {
+        "ja": "データベース",
+        "en": "Database science"
+      }
+    },
+    {
+      "discipline": {
+        "ja": "情報通信",
+        "en": "Informatics"
+      },
+      "field": {
+        "ja": "ウェブ情報学、サービス情報学",
+        "en": "Web and service informatics"
+      }
+    },
+    {
+      "discipline": {
+        "ja": "人文・社会",
+        "en": "Humanities & social sciences"
+      },
+      "field": {
+        "ja": "図書館情報学、人文社会情報学",
+        "en": "Library/information science, humanistic/social informatics"
+      }
+    },
+    {
+      "discipline": {
+        "ja": "情報通信",
+        "en": "Informatics"
+      },
+      "field": {
+        "ja": "知能情報学",
+        "en": "Intelligent informatics"
+      }
+    },
+    {
+      "discipline": {
+        "ja": "情報通信",
+        "en": "Informatics"
+      },
+      "field": {
+        "ja": "学習支援システム",
+        "en": "Learning support systems"
+      }
+    }
+  ],
+  "experience": [
+    {
+      "from": "2026-04",
+      "to": "present",
+      "affiliation": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      },
+      "section": {
+        "ja": "データサイエンス学部",
+        "en": "Faculty of Data Science"
+      },
+      "job": {
+        "ja": "助教",
+        "en": "Assistant professor"
+      }
+    },
+    {
+      "from": "2025-09",
+      "to": "2026-03",
+      "affiliation": {
+        "ja": "京都女子大学",
+        "en": "Kyoto Women's University"
+      },
+      "section": {
+        "ja": "データサイエンス学部",
+        "en": "Faculty of Data Science"
+      },
+      "job": {
+        "ja": "非常勤講師",
+        "en": "Part-time teacher"
+      }
+    },
+    {
+      "from": "2022-04",
+      "to": "2023-03",
+      "affiliation": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "section": {
+        "ja": "文化情報学部",
+        "en": "Faculty of Culture and Information Science"
+      },
+      "job": {
+        "ja": "特定業務職員"
+      }
+    },
+    {
+      "from": "2019-04",
+      "to": "2021-09",
+      "affiliation": {
+        "ja": "日本学術振興会",
+        "en": "Japan Sciety for the Promotion of Science"
+      },
+      "job": {
+        "ja": "特別研究員 (DC2)",
+        "en": "JSPS Research Fellow (DC2)"
+      }
+    },
+    {
+      "from": "2018-04",
+      "to": "2020-03",
+      "affiliation": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "section": {
+        "ja": "文化情報学部",
+        "en": "Faculty of Culture and Information Science"
+      },
+      "job": {
+        "ja": "特定業務職員",
+        "en": "Specific office worker"
+      }
+    }
+  ],
+  "education": [
+    {
+      "from": "2018-04",
+      "to": "2026-03",
+      "affiliation": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "department": {
+        "ja": "大学院文化情報学研究科 博士課程（後期課程）",
+        "en": "Graduate School of Calture and Information Science (Doctoral Course)"
+      }
+    },
+    {
+      "from": "2016-04",
+      "to": "2018-03",
+      "affiliation": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "department": {
+        "ja": "大学院文化情報学研究科 博士課程（前期課程）",
+        "en": "Gradute School of Culture and Information Science"
+      }
+    },
+    {
+      "from": "2014-04",
+      "to": "2016-03",
+      "affiliation": {
+        "ja": "同志社大学",
+        "en": "Doshisha University"
+      },
+      "department": {
+        "ja": "文化情報学部",
+        "en": "Faculty of Culture and Information Science"
+      }
+    },
+    {
+      "from": "2009-04",
+      "to": "2014-03",
+      "affiliation": {
+        "ja": "香川高等専門学校",
+        "en": "National Institute of Technology, Kagawa College"
+      },
+      "course": {
+        "ja": "情報工学科",
+        "en": "Computer Science"
+      }
+    }
+  ],
+  "teaching": [
+    {
+      "from": "2025-09",
+      "to": "2026-03",
+      "subject": {
+        "ja": "Webプログラミング",
+        "en": "Web programming"
+      },
+      "institution": {
+        "ja": "京都女子大学",
+        "en": "Kyoto Women's University"
+      }
+    },
+    {
+      "from": "2025-09",
+      "to": "2026-03",
+      "subject": {
+        "ja": "ソフトウェア設計",
+        "en": "Software Design"
+      },
+      "institution": {
+        "ja": "京都女子大学",
+        "en": "Kyoto Women's University"
+      }
+    }
+  ],
+  "memberships": [
+    {
+      "ja": "IEEE Computer Society",
+      "en": "IEEE Computer Society"
+    },
+    {
+      "ja": "Association for Computing Machinery",
+      "en": "Association for Computing Machinery"
+    },
+    {
+      "ja": "日本データベース学会",
+      "en": "THE DATABASE SOCIETY OF JAPAN"
+    },
+    {
+      "ja": "電子情報通信学会",
+      "en": "THE INSTITUTE OF ELECTRONICS, INFORMATION AND COMMUNICATION ENGINEERS"
+    },
+    {
+      "ja": "情報処理学会",
+      "en": "INFORMATION PROCESSING SOCIETY OF JAPAN"
+    }
+  ]
+}

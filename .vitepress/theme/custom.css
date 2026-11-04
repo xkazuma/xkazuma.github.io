@@ -21,3 +21,17 @@ ul.xk-list, .vp-doc ul.xk-list { list-style: none; padding: 0 !important; margin
 .xk-tags { display: inline-flex; gap: .35rem; flex-wrap: wrap; margin-left: .5rem; }
 .xk-tag { font-size: .75rem; padding: 0 .45rem; border-radius: 999px; background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); }
 .xk-empty { color: var(--vp-c-text-2); font-style: italic; }
+
+/* CV ページ */
+.xk-cv-head { margin: 1rem 0 1.5rem; }
+.xk-cv-head p { margin: .2rem 0; }
+.xk-cv-name { font-size: 1.4rem; font-weight: 700; }
+.xk-cv-tags { margin: .5rem 0 0 !important; }
+.vp-doc table.xk-cv-table { display: table; width: 100%; border: none; margin: .75rem 0; }
+.vp-doc .xk-cv-table tr, .vp-doc .xk-cv-table th, .vp-doc .xk-cv-table td { border: none; background: transparent; }
+.vp-doc .xk-cv-table th { width: 11.5rem; padding: .35rem .75rem .35rem 0; font-weight: 500; color: var(--vp-c-text-2); text-align: left; vertical-align: top; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.vp-doc .xk-cv-table td { padding: .35rem 0; }
+@media (max-width: 640px) {
+  .vp-doc .xk-cv-table th, .vp-doc .xk-cv-table td { display: block; width: auto; padding: 0; }
+  .vp-doc .xk-cv-table td { padding-bottom: .6rem; }
+}

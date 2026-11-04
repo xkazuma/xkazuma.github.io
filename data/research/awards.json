@@ -2,5 +2,130 @@
   "category": "awards",
   "label": "受賞",
   "order": 4,
-  "items": []
+  "items": [
+    {
+      "title": "事例共有による連携と共助を促進、療育支援AIシステム",
+      "authors": [
+        "楠和馬",
+        "木村優介"
+      ],
+      "venue": "公益財団法人コーナン財団 入賞",
+      "date": "2026-03"
+    },
+    {
+      "title": "療育事業 DX 促進に向けたAI協調型療育支援システムの構築",
+      "authors": [
+        "木村優介",
+        "楠和馬"
+      ],
+      "venue": "近畿総合通信局 近畿総合通信局長賞",
+      "date": "2025-12"
+    },
+    {
+      "title": "療育事業 DX 促進に向けたAI協調型療育支援システムの構築",
+      "authors": [
+        "木村優介",
+        "楠和馬"
+      ],
+      "venue": "株式会社マネーフォワード マネーフォワード賞",
+      "date": "2025-12"
+    },
+    {
+      "title": "レビューの要約を目的とした単語の意味領域に基づく上位語選択",
+      "authors": [
+        "渡辺 一生",
+        "楠 和馬",
+        "吉丸 直希",
+        "波多野 賢治"
+      ],
+      "venue": "日本データベース学会 学生プレゼンテーション賞",
+      "date": "2023-03"
+    },
+    {
+      "title": "Towards Efficient Data Access Through Multiple Relationship in Graph-Structured Digital Archives, ICADL2022",
+      "authors": [
+        "Kazuma Kusu",
+        "Takahiro Komamizu",
+        "Kenji Hatano"
+      ],
+      "venue": "VNU-LIC Library and Digital Knowledge Center, Vietnam National University, Hanoi Best Student Paper Runner-up",
+      "date": "2022-12"
+    },
+    {
+      "title": "A Dialogue Robot System to Improve Credibility in Sightseeing Spot Recommendations",
+      "authors": [
+        "Naoki Yoshimaru",
+        "Tomohiro Masuda",
+        "Hyejin Hong",
+        "Yusei Tanaka",
+        "Motoharu Okuma",
+        "Nagihiro Matsumoto",
+        "Kazuma Kusu",
+        "Takamasa Iio",
+        "Kenji Hatano"
+      ],
+      "venue": "Dialogue robot competition committee Honorable Mention Award",
+      "date": "2022-10"
+    },
+    {
+      "title": "Towards Constructing Destination Node Index for Repetition Paths",
+      "authors": [
+        "Kazuma Kusu",
+        "Takahiro Komamizu",
+        "Kenji Hatano"
+      ],
+      "venue": "情報処理学会データベースシステム研究会・ 情報処理学会情報基礎とアクセス技術研究会・電子情報通信学会 データ工学研究会 学生奨励賞",
+      "date": "2022-09"
+    },
+    {
+      "title": "単語の概念関係を考慮したレビューの評価観点自動抽出手法",
+      "authors": [
+        "小森 雄太",
+        "木村 優介",
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会 学生奨励賞",
+      "date": "2021-03"
+    },
+    {
+      "title": "複雑ネットワークにおける効率的な反復走査のための経路索引構築法",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "情報処理学会 学生奨励賞",
+      "date": "2020-12"
+    },
+    {
+      "title": "``属性を用いた問合せの効率化に向けたグラフデータベースシステムの併用'', 第 11 回データ工学と情報マネジメントに関するフォーラム予稿集, H3-4",
+      "authors": [
+        "楠 和馬",
+        "波多野 賢治"
+      ],
+      "venue": "DEIM2019実行委員会 学生プレゼンテーション賞",
+      "date": "2019-03"
+    },
+    {
+      "title": "``Calculating Cooking Recipe’s Difficulty based on Cooking Activities'', In Proceedings of 9th Workshop on Multimedia for Cooking and Eating Activities",
+      "authors": [
+        "楠 和馬",
+        "牧野 望",
+        "塩井 隆円",
+        "波多野 賢治"
+      ],
+      "venue": "Cookpad Inc Cookpad Student Paper Award",
+      "date": "2017-08"
+    },
+    {
+      "title": "顧客の予約特性を考慮した集客効率化のための割引施策の提案 (仮)",
+      "authors": [
+        "岡部 格明",
+        "土田 潤",
+        "楠 和馬"
+      ],
+      "venue": "統計数理研究所 最優秀賞",
+      "date": "2016-02"
+    }
+  ]
 }
