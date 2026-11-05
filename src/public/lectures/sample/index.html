@@ -121,11 +121,12 @@
           const hkdf = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: enc.encode(`${BASE}${d.dir}/`), info: enc.encode(info) });
           decks[d.dir] = {
             title: d.title,
+            ...(Array.isArray(d.users) ? { users: d.users } : {}),
             encKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/enc'), hk, { name: 'AES-GCM', length: 256 }, false, ['decrypt']),
             nameKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/name'), hk, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']),
           };
         }
-        await idb('readwrite', (st) => st.put({ user, title: payload.title, decks, savedAt: Date.now() }, BASE));
+        await idb('readwrite', (st) => st.put({ user, title: payload.title, admin: payload.admin === true, decks, savedAt: Date.now() }, BASE));
 
         await swReady;
         say('読み込んでいます…', true);
