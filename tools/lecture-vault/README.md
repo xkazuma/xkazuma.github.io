@@ -65,6 +65,11 @@ node tools/lecture-vault/encrypt.mjs \
 CI で自動化する場合は [`examples/lectures-repo-publish.yml`](examples/lectures-repo-publish.yml) を
 資料ソース用の private リポジトリ（xkazuma/xkazuma-lectures）に置きます。push するとビルド・暗号化して、暗号文だけをこのリポジトリに push します。
 
+## アクセス解析
+
+ログイン画面と、Service Worker が返す HTML（資料一覧・復号したページ遷移の HTML）は `<base>/../analytics.js`（例: `/lectures/analytics.js`）を読み込みます。
+このファイルはサイト本体のビルド（`.vitepress/config.mts` の `buildEnd`）が `GA_MEASUREMENT_ID` から生成します。管理者でログインしているときは差し込みません。
+
 ## 運用上の注意
 
 - **パスワードの強さがそのまま安全性です。** 暗号文と `vault.json` は誰でも取得でき、オフラインで総当たりできます。

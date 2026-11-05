@@ -38,6 +38,8 @@
   </main>
   <script type="module">
     const BASE = __VAULT_BASE_JSON__;
+    // アクセス解析（サイト本体のビルドが <base>/../analytics.js を生成。なければ何もしない）
+    { const a = document.createElement('script'); a.async = true; a.src = new URL('../analytics.js', location.origin + BASE).pathname; document.head.appendChild(a); }
     const enc = new TextEncoder();
     const $ = (id) => document.getElementById(id);
     const say = (text, info = false) => { $('msg').textContent = text; $('msg').className = info ? 'info' : ''; };
