@@ -20,5 +20,12 @@
     "term": "2025年度",
     "path": "/lectures/web-programming-kwu/",
     "published": true
+  },
+  {
+    "id": "programming-basics-osu",
+    "title": "プログラミング基礎，大阪成蹊大学データサイエンス学部",
+    "term": "2026年度",
+    "path": "/lectures/programming-basics-osu/",
+    "published": true
   }
 ]
