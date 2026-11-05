@@ -61,7 +61,7 @@ export default defineConfig({
       { text: 'About', link: '/about' },
       { text: 'CV', link: '/cv' },
       { text: '研究', link: '/research/', activeMatch: '^/research/' },
-      { text: '活動ログ', link: '/activities/', activeMatch: '^/activities/' },
+      { text: '更新ログ', link: '/activities/', activeMatch: '^/activities/' },
       { text: '資料・成果物', link: '/teaching/', activeMatch: '^/teaching/' },
     ],
     socialLinks: [

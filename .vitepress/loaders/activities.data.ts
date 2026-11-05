@@ -12,7 +12,7 @@ export interface Activity {
 declare const data: Activity[]
 export { data }
 
-// src/activities/posts/*.md の frontmatter から活動ログ一覧を作る（新しい順）
+// src/activities/posts/*.md の frontmatter から更新ログ一覧を作る（新しい順）
 export default createContentLoader('activities/posts/*.md', {
   transform(raw): Activity[] {
     return raw

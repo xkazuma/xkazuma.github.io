@@ -8,6 +8,6 @@ outline: [2, 2]
 <!-- 以下の業績一覧は data/research/*.json から生成されます（researchmap の内容をもとに更新） -->
 <ResearchList />
 
-## 研究に関する活動ログ
+## 更新ログ
 
 <ActivityList category="research" />

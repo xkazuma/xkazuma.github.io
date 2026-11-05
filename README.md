@@ -55,9 +55,14 @@ src/                     ページ（Markdown）
 
 ## コンテンツの追加方法
 
-### 活動ログ
+### 更新ログ
 
-`src/activities/posts/YYYY-MM-DD-slug.md` を作成します。
+`src/activities/posts/YYYY-MM-DD-slug.md` を作成します。`category` に応じて各ページ（研究・事業・資料・成果物）の「更新ログ」欄に表示され、全件は `/activities/`（更新ログページ）に一覧されます。
+
+次の更新をしたときは、必ず対応する更新ログのエントリーを追加します。
+
+- 「資料・成果物」ページに資料を公開したとき（`data/courses.json` に `published: true` の項目を追加したときなど）→ `category: teaching` のエントリーを追加
+- 「研究」ページにエントリーを追加したとき（researchmap の取り込みや `data/research/*.json` の手動編集で業績が増えたとき）→ `category: research` のエントリーを追加し、追加した業績を本文に列挙
 
 ```md
 ---
