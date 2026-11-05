@@ -21,7 +21,7 @@ export default defineConfig({
       { text: 'CV', link: '/cv' },
       { text: '研究', link: '/research/', activeMatch: '^/research/' },
       { text: '活動ログ', link: '/activities/', activeMatch: '^/activities/' },
-      { text: '授業', link: '/teaching/', activeMatch: '^/teaching/' },
+      { text: '資料・成果物', link: '/teaching/', activeMatch: '^/teaching/' },
     ],
     socialLinks: [
       { icon: 'github', link: 'https://github.com/xkazuma' },
