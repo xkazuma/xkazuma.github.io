@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>プログラミング基礎 | ログイン</title>
+  <style>
+    :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --line: #d6d3d1; --accent: #1c1917; --accent-fg: #fafaf9; --err: #b91c1c; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --line: #44403c; --accent: #f5f5f4; --accent-fg: #1c1917; --err: #fca5a5; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--fg);
+           font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+    main { width: 100%; max-width: 22rem; padding: 2rem 1rem; }
+    h1 { font-size: 1.3rem; margin: 0 0 .3rem; }
+    p.lead { color: var(--muted); margin: 0 0 1.5rem; font-size: .9rem; }
+    label { display: block; font-size: .85rem; margin: 1rem 0 .3rem; }
+    input { width: 100%; padding: .6rem .7rem; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 6px; }
+    button { width: 100%; margin-top: 1.5rem; padding: .7rem; font: inherit; border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+    button:disabled { opacity: .6; cursor: progress; }
+    #msg { min-height: 1.4em; margin-top: 1rem; font-size: .85rem; color: var(--err); }
+    #msg.info { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>プログラミング基礎</h1>
+    <p class="lead">この資料は受講者限定です。配布されたユーザ名とパスワードを入力してください。</p>
+    <form id="f" autocomplete="on">
+      <label for="u">ユーザ名</label>
+      <input id="u" name="username" autocomplete="username" required>
+      <label for="p">パスワード</label>
+      <input id="p" name="password" type="password" autocomplete="current-password" required>
+      <button id="b" type="submit">ログイン</button>
+      <div id="msg" role="status"></div>
+    </form>
+    <noscript>JavaScript を有効にしてください。</noscript>
+  </main>
+  <script type="module">
+    const BASE = "/lectures/programming-basics-osu/";
+    // アクセス解析（サイト本体のビルドが <base>/../analytics.js を生成。なければ何もしない）
+    { const a = document.createElement('script'); a.async = true; a.src = new URL('../analytics.js', location.origin + BASE).pathname; document.head.appendChild(a); }
+    const enc = new TextEncoder();
+    const $ = (id) => document.getElementById(id);
+    const say = (text, info = false) => { $('msg').textContent = text; $('msg').className = info ? 'info' : ''; };
+    const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+    function db() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('lecture-vault', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('keys');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    async function idb(mode, fn) {
+      const d = await db();
+      return new Promise((resolve, reject) => {
+        const tx = d.transaction('keys', mode);
+        const req = fn(tx.objectStore('keys'));
+        tx.oncomplete = () => resolve(req.result);
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    const supported = 'serviceWorker' in navigator && window.isSecureContext && window.indexedDB && crypto.subtle;
+    if (!supported) {
+      say('このブラウザでは閲覧できません（HTTPS と Service Worker に対応したブラウザが必要です）。');
+      $('b').disabled = true;
+    }
+    const swReady = supported
+      ? navigator.serviceWorker.register(BASE + 'sw.js', { scope: BASE }).then(() => navigator.serviceWorker.ready)
+      : Promise.reject();
+
+    // 鍵が保存済みなのにこの画面が出た = Service Worker がまだこのページを制御していない（初回）。
+    // 制御が始まったら一度だけ再読み込みする。
+    if (supported && !new URLSearchParams(location.search).has('logout')) {
+      idb('readonly', (s) => s.get(BASE)).then(async (rec) => {
+        if (!rec) return;
+        await swReady;
+        if (navigator.serviceWorker.controller) {
+          // 制御済みでも画面が出た = 保存済みの鍵で復号できなかった（資料が再暗号化された等）
+          await idb('readwrite', (s) => s.delete(BASE));
+          say('ログインし直してください。', true);
+          return;
+        }
+        if (!sessionStorage.getItem('lv-reloaded')) {
+          sessionStorage.setItem('lv-reloaded', '1');
+          navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+        }
+      }).catch(() => {});
+    }
+    if (new URLSearchParams(location.search).has('logout')) say('ログアウトしました。', true);
+
+    $('f').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const user = $('u').value.trim();
+      const pass = $('p').value;
+      $('b').disabled = true;
+      say('確認しています…', true);
+      try {
+        const vault = await (await fetch(BASE + 'vault.json', { cache: 'no-cache' })).json();
+        const id = hex(await crypto.subtle.digest('SHA-256', enc.encode(`${BASE}\n${user}`)));
+        const slot = vault.slots.find((s) => s.id === id);
+        // ユーザが存在しない場合も同じ程度の時間をかけてから失敗させる
+        const s = slot ?? vault.slots[0];
+        const pw = await crypto.subtle.importKey('raw', enc.encode(`${user}\u0000${pass}`), 'PBKDF2', false, ['deriveKey']);
+        const kek = await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', hash: vault.kdf.hash, salt: unb64(s.salt), iterations: vault.kdf.iterations },
+          pw, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+        let payload;
+        try {
+          payload = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: unb64(s.iv), additionalData: enc.encode(BASE) }, kek, unb64(s.data))));
+        } catch { payload = null; }
+        if (!slot || !payload) throw new Error('auth');
+
+        // 見られる資料ごとに鍵を導出し、取り出せない（non-extractable）鍵として保存する
+        const decks = {};
+        for (const d of payload.decks) {
+          const hk = await crypto.subtle.importKey('raw', unb64(d.key), 'HKDF', false, ['deriveKey']);
+          const hkdf = (info) => ({ name: 'HKDF', hash: 'SHA-256', salt: enc.encode(`${BASE}${d.dir}/`), info: enc.encode(info) });
+          decks[d.dir] = {
+            title: d.title,
+            ...(Array.isArray(d.users) ? { users: d.users } : {}),
+            encKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/enc'), hk, { name: 'AES-GCM', length: 256 }, false, ['decrypt']),
+            nameKey: await crypto.subtle.deriveKey(hkdf('lecture-vault/name'), hk, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']),
+          };
+        }
+        await idb('readwrite', (st) => st.put({ user, title: payload.title, admin: payload.admin === true, decks, savedAt: Date.now() }, BASE));
+
+        await swReady;
+        say('読み込んでいます…', true);
+        const go = () => { const u = new URL(location.href); u.searchParams.delete('logout'); location.replace(u); };
+        if (navigator.serviceWorker.controller) go();
+        else navigator.serviceWorker.addEventListener('controllerchange', go);
+      } catch (e) {
+        say(e && e.message === 'auth' ? 'ユーザ名またはパスワードが違います。' : '読み込みに失敗しました。時間をおいて再度お試しください。');
+        $('b').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
