@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import courses from '../../../data/courses.json'
 
-const published = courses.filter((c) => c.published)
+// 年度の新しい順に並べる（年度の数字が同じなら courses.json の順のまま）
+const year = (term: string) => Number(term.match(/\d{4}/)?.[0] ?? 0)
+const published = courses
+  .filter((c) => c.published)
+  .map((c, i) => ({ c, i }))
+  .sort((a, b) => year(b.c.term) - year(a.c.term) || a.i - b.i)
+  .map(({ c }) => c)
 </script>
 
 <template>
