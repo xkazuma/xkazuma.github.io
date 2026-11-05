@@ -13,5 +13,12 @@
     "term": "2026年度",
     "path": "/lectures/stats-practice-fy26/",
     "published": true
+  },
+  {
+    "id": "web-programming-kwu",
+    "title": "Webプログラミング，京都女子大学データサイエンス学部",
+    "term": "2025年度",
+    "path": "/lectures/web-programming-kwu/",
+    "published": true
   }
 ]
