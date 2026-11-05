@@ -8,7 +8,7 @@ hero:
       text: About
       link: /about
     - theme: alt
-      text: 活動ログ
+      text: 更新ログ
       link: /activities/
 
 features:
@@ -26,6 +26,6 @@ features:
     linkText: 資料を見る
 ---
 
-## 最近の活動
+## 最近の更新
 
 <ActivityList :limit="5" />

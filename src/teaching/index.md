@@ -10,6 +10,6 @@ title: 資料・成果物
 
 <CourseList />
 
-## 授業に関する活動ログ
+## 更新ログ
 
 <ActivityList category="teaching" />
