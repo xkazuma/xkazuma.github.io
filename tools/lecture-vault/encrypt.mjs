@@ -11,12 +11,15 @@
 //   {
 //     "title": "授業名",
 //     "users": ["alice", "bob"],                       // 既定で全資料を見られるユーザ
+//     "admins": ["owner"],                            // 公開・非公開にかかわらず全資料を見られるユーザ（任意）
 //     "decks": {
 //       "05-exam": { "users": ["alice"] },             // この資料だけ見られるユーザを上書き
 //       "06-extra": { "users": ["alice", "carol"], "keyVersion": 2 }
 //     }
 //   }
 // keyVersion を上げるとその資料だけ鍵が変わる（その資料からユーザを外したときに使う）。
+// 管理者（--admins / 環境変数 LECTURE_ADMINS をカンマ区切りで、または course.json の admins）は
+// users が空の資料（非公開）も含めて全資料を見られ、資料一覧に公開状態と閲覧ユーザが表示される。
 //
 // 出力（すべて公開されても平文は含まれない）:
 //   <out>/index.html, <out>/<deck>/index.html  ログイン画面
@@ -43,6 +46,7 @@ const { values: args } = parseArgs({
     config: { type: 'string' },
     title: { type: 'string' },
     users: { type: 'string' }, // パスワードの JSON ファイル（未指定なら環境変数 LECTURE_USERS）
+    admins: { type: 'string' }, // 管理者（カンマ区切り。未指定なら環境変数 LECTURE_ADMINS）
     iterations: { type: 'string', default: '600000' },
   },
 });
@@ -87,6 +91,11 @@ const courseTitle = args.title ?? config.title ?? path.basename(base);
 // --config を渡したのに users がなければ誰にも見せない（新しい授業が意図せず全員に公開されるのを防ぐ）
 const defaultUsers = config.users ?? (args.config ? [] : Object.keys(passwords));
 const deckConfig = config.decks ?? {};
+const admins = [...new Set([
+  ...String(args.admins ?? process.env.LECTURE_ADMINS ?? '').split(',').map((s) => s.trim()).filter(Boolean),
+  ...(config.admins ?? []),
+])];
+for (const u of admins) if (!(u in passwords)) fail(`管理者 "${u}" のパスワードが LECTURE_USERS にありません`);
 
 const inDir = path.resolve(args.in);
 const outDir = path.resolve(args.out);
@@ -148,7 +157,10 @@ for (const dir of deckDirs) {
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(dir)) fail(`資料名 "${dir}" は英数字・ハイフン・ドット・アンダースコアにしてください`);
   const dc = deckConfig[dir] ?? {};
   const users = [...new Set(dc.users ?? defaultUsers)];
-  if (users.length === 0) {
+  // 管理者以外に見られるユーザがいれば「公開」、いなければ「非公開」（管理者だけが見られる）
+  const viewers = users.filter((u) => !admins.includes(u));
+  const readers = [...new Set([...users, ...admins])];
+  if (readers.length === 0) {
     warn(`資料 "${dir}" を見られるユーザがいないので公開しません`);
     continue;
   }
@@ -175,11 +187,12 @@ for (const dir of deckDirs) {
   }
   const html = await fs.readFile(path.join(inDir, dir, 'index.html'), 'utf8');
   const title = (dc.title ?? html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '').trim().replace(/ - Slidev$/, '') || dir;
-  for (const u of users) {
+  for (const u of readers) {
     if (!grants.has(u)) grants.set(u, []);
-    grants.get(u).push({ dir, title, key: b64(raw) });
+    // 公開状態と閲覧ユーザは管理者のスロットにだけ入れる（受講者には他の受講者名を見せない）
+    grants.get(u).push(admins.includes(u) ? { dir, title, key: b64(raw), users: viewers } : { dir, title, key: b64(raw) });
   }
-  published.push({ dir, users: users.length });
+  published.push({ dir, viewers });
 }
 
 // --- キースロット -------------------------------------------------------------
@@ -190,7 +203,7 @@ for (const [user, decks] of grants) {
   const pw = await subtle.importKey('raw', enc.encode(`${user}\u0000${passwords[user]}`), 'PBKDF2', false, ['deriveKey']);
   const kek = await subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, pw, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const payload = enc.encode(JSON.stringify({ title: courseTitle, decks }));
+  const payload = enc.encode(JSON.stringify({ title: courseTitle, decks, ...(admins.includes(user) ? { admin: true } : {}) }));
   const wrapped = await subtle.encrypt({ name: 'AES-GCM', iv, additionalData: enc.encode(base) }, kek, payload);
   const id = hex(await subtle.digest('SHA-256', enc.encode(`${base}\n${user}`)));
   slots.push({ id, salt: b64(salt), iv: b64(iv), data: b64(wrapped) });
@@ -212,7 +225,8 @@ for (const d of ['', ...published.map((p) => p.dir)]) {
 await fs.copyFile(path.join(here, 'runtime', 'sw.js'), path.join(outDir, 'sw.js'));
 
 console.log(`lecture-vault: ${published.length} deck(s), ${fileCount} files encrypted, ${slots.length} user(s) -> ${outDir}`);
-for (const p of published) console.log(`  ${p.dir}: ${p.users} user(s)`);
+if (admins.length) console.log(`  管理者: ${admins.join(', ')}`);
+for (const p of published) console.log(`  ${p.dir}: ${p.viewers.length ? `公開（${p.viewers.join(', ')}）` : '非公開（管理者のみ）'}`);
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);

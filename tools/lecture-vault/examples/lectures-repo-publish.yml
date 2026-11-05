@@ -44,6 +44,8 @@ jobs:
         env:
           LECTURE_USERS: ${{ secrets.LECTURE_USERS }}
           LECTURE_MASTER_KEY: ${{ secrets.LECTURE_MASTER_KEY }}
+          # 公開・非公開にかかわらず全資料を見られる管理者（カンマ区切り。秘密ではないのでここに書く）
+          LECTURE_ADMINS: xkzm
         run: |
           set -euo pipefail
           # /lectures/ 配下はこのリポジトリが管理する。消した授業・ユーザ未設定の授業は公開をやめる

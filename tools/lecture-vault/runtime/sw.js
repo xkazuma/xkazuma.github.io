@@ -99,11 +99,21 @@ async function handle(req, url, rel) {
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 function renderIndex(rec) {
-  const items = Object.entries(rec.decks)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/">${esc(d.title || dir)}</a></li>`)
+  const entries = Object.entries(rec.decks).sort(([a], [b]) => a.localeCompare(b));
+  const status = (d) => {
+    if (!rec.admin || !Array.isArray(d.users)) return '';
+    return d.users.length
+      ? ` <span class="tag pub">公開中</span> <span class="who">${esc(d.users.join(', '))}</span>`
+      : ' <span class="tag priv">非公開</span> <span class="who">管理者のみ</span>';
+  };
+  const items = entries
+    .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/">${esc(d.title || dir)}</a>${status(d)}</li>`)
     .join('');
-  return `<h1>${esc(rec.title)}</h1>
+  const pub = entries.filter(([, d]) => Array.isArray(d.users) && d.users.length).length;
+  const summary = rec.admin
+    ? `<p class="admin">管理者として表示しています。公開中 ${pub} 件・非公開 ${entries.length - pub} 件</p>`
+    : '';
+  return `<h1>${esc(rec.title)}</h1>${summary}
     <ul>${items || '<li>閲覧できる資料はまだありません。</li>'}</ul>
     <footer>${esc(rec.user ?? '')} でログイン中 · <a href="${BASE}?logout">ログアウト</a></footer>`;
 }
@@ -113,8 +123,8 @@ function page(status, title, body) {
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>
-  :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --link: #2563eb; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --link: #93c5fd; } }
+  :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --link: #2563eb; --pub-bg: #dcfce7; --pub-fg: #166534; --priv-bg: #e7e5e4; --priv-fg: #44403c; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --link: #93c5fd; --pub-bg: #14532d; --pub-fg: #bbf7d0; --priv-bg: #44403c; --priv-fg: #e7e5e4; } }
   body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
   main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem; }
   h1 { font-size: 1.6rem; margin: 0 0 1.5rem; }
@@ -122,6 +132,11 @@ function page(status, title, body) {
   a { color: var(--link); }
   p, footer { color: var(--muted); }
   footer { margin-top: 3rem; font-size: .9rem; }
+  .tag { display: inline-block; margin-left: .5rem; padding: 0 .5rem; border-radius: 999px; font-size: .75rem; line-height: 1.6; vertical-align: middle; }
+  .tag.pub { background: var(--pub-bg); color: var(--pub-fg); }
+  .tag.priv { background: var(--priv-bg); color: var(--priv-fg); }
+  .who { color: var(--muted); font-size: .8rem; margin-left: .3rem; }
+  p.admin { font-size: .85rem; }
 </style></head><body><main>${body}</main></body></html>`;
   return new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
 }
