@@ -268,6 +268,66 @@
   ],
   "teaching": [
     {
+      "from": "2026-09",
+      "to": "2027-03",
+      "subject": {
+        "ja": "データサイエンス実践",
+        "en": "Practical Data Science"
+      },
+      "institution": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      }
+    },
+    {
+      "from": "2026-09",
+      "to": "2027-03",
+      "subject": {
+        "ja": "データサイエンス基礎",
+        "en": "Data Science Basics"
+      },
+      "institution": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      }
+    },
+    {
+      "from": "2026-09",
+      "to": "2027-03",
+      "subject": {
+        "ja": "未来クリエーションプロジェクト2",
+        "en": "Future Creation Project 2"
+      },
+      "institution": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      }
+    },
+    {
+      "from": "2026-09",
+      "to": "2027-03",
+      "subject": {
+        "ja": "統計学実践",
+        "en": "Practical Statistics"
+      },
+      "institution": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      }
+    },
+    {
+      "from": "2026-04",
+      "to": "2026-09",
+      "subject": {
+        "ja": "プログラミング基礎",
+        "en": "Programming Basics"
+      },
+      "institution": {
+        "ja": "大阪成蹊大学",
+        "en": "Osaka Seikei University"
+      }
+    },
+    {
       "from": "2025-09",
       "to": "2026-03",
       "subject": {
