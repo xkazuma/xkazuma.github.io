@@ -107,7 +107,7 @@ function renderIndex(rec) {
       : ' <span class="tag priv">非公開</span> <span class="who">管理者のみ</span>';
   };
   const items = entries
-    .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/">${esc(d.title || dir)}</a>${status(d)}</li>`)
+    .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/" target="_blank" rel="noopener">${esc(d.title || dir)}</a>${status(d)}</li>`)
     .join('');
   const pub = entries.filter(([, d]) => Array.isArray(d.users) && d.users.length).length;
   const summary = rec.admin
