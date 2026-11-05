@@ -1,4 +1,19 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type HeadConfig } from 'vitepress'
+
+// Google アナリティクス (GA4)。測定ID (G-XXXXXXXXXX) はビルド時の環境変数 GA_MEASUREMENT_ID から読む。
+// 本番ビルドでは GitHub のリポジトリ変数 GA_MEASUREMENT_ID を deploy.yml が渡す。未設定ならタグを出力しない。
+// VitePress のページ遷移（history.pushState）は GA4 の拡張計測「ブラウザの履歴イベントに基づくページの変更」で計測される。
+// /lectures/ 配下の授業資料は VitePress の管轄外の静的ファイルなので、このタグは入らない（計測対象外）。
+const gaId = process.env.GA_MEASUREMENT_ID?.trim()
+const gaHead: HeadConfig[] = gaId && /^G-[A-Z0-9]+$/.test(gaId)
+  ? [
+      ['script', { async: '', src: `https://www.googletagmanager.com/gtag/js?id=${gaId}` }],
+      ['script', {}, `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');`],
+    ]
+  : []
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,6 +28,7 @@ export default defineConfig({
   ignoreDeadLinks: [/^\/lectures(\/|$)/],
   head: [
     ['meta', { name: 'theme-color', content: '#3f6f8f' }],
+    ...gaHead,
   ],
   themeConfig: {
     siteTitle: 'xkzm.me',

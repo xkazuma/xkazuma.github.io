@@ -22,6 +22,13 @@ npm run preview
 - **ローカル:** `npm run build && npm run preview` で本番と同じビルド結果を http://localhost:4173 で確認できます。
 - **PR:** PR を作るとビルドだけが走り（本番には反映されません）、ビルド結果が Actions の実行ページに Artifact `site-preview`（zip）として 7 日間保存されます。ダウンロードして展開し、`npx serve <展開先>` などで開けば確認できます。
 
+## アクセス解析（Google アナリティクス 4）
+
+- 測定ID（`G-XXXXXXXXXX`）は GitHub のリポジトリ変数 `GA_MEASUREMENT_ID`（Settings → Secrets and variables → Actions → **Variables**）に設定します。`main` へのデプロイ時だけビルドに渡され、`<head>` に gtag.js が入ります。未設定なら何も出力しません。PR ビルドには入りません。
+- ローカルで確認する場合: `GA_MEASUREMENT_ID=G-XXXXXXXXXX npm run build`
+- ページ遷移の計測は GA4 の拡張計測（「ブラウザの履歴イベントに基づくページの変更」、既定で有効）に任せています。
+- `/lectures/` 配下の授業資料は VitePress の管轄外のため計測対象外です。
+
 ## ディレクトリ構成
 
 ```

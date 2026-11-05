@@ -31,6 +31,9 @@ jobs:
       - run: npm ci
       # 授業資料（Slidev のビルド・暗号化）を CI で行う場合は、ここで src/public/lectures/ に出力する
       - run: npm run build
+        env:
+          # Google アナリティクスの測定ID（Settings → Secrets and variables → Actions → Variables）。PR ビルドには入れない
+          GA_MEASUREMENT_ID: ${{ github.event_name != 'pull_request' && vars.GA_MEASUREMENT_ID || '' }}
       - name: Upload preview (PR)
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
