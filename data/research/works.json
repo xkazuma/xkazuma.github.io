@@ -1,0 +1,15 @@
+{
+  "category": "works",
+  "label": "Works（作品等）",
+  "order": 7,
+  "items": [
+    {
+      "title": "会議管理ＡＩシステム",
+      "authors": [
+        "株式会社タケロボ"
+      ],
+      "date": "2026-10-08",
+      "url": "https://www.takerobo.co.jp/meeting_management.html"
+    }
+  ]
+}
