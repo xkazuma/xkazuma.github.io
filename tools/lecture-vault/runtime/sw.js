@@ -14,6 +14,10 @@ const TYPES = {
   pdf: 'application/pdf', wasm: 'application/wasm', zip: 'application/zip',
 };
 const typeOf = (p) => TYPES[p.split('.').pop().toLowerCase()] ?? 'application/octet-stream';
+// アクセス解析スクリプト（サイト本体のビルドが生成。授業ディレクトリの 1 つ上）。
+// 管理者の閲覧は数えないよう、管理者以外に返す HTML にだけ差し込む。
+const ANALYTICS_TAG = `<script async src="${new URL('../analytics.js', self.registration.scope).pathname}"></script>`;
+const withAnalytics = (html, rec) => (rec.admin ? html : html.replace(/<\/head>/i, `${ANALYTICS_TAG}</head>`));
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -59,7 +63,7 @@ async function handle(req, url, rel) {
   if (!rec || !rec.decks) return isNav ? fetch(req) : new Response('Unauthorized', { status: 401 });
 
   // 授業トップ: ログイン中のユーザが見られる資料だけを一覧にする
-  if (rel === '' || rel === 'index.html') return page(200, rec.title, renderIndex(rec));
+  if (rel === '' || rel === 'index.html') return page(200, rec.title, renderIndex(rec), rec);
 
   const slash = rel.indexOf('/');
   const dir = slash < 0 ? rel : rel.slice(0, slash);
@@ -69,7 +73,7 @@ async function handle(req, url, rel) {
     if (!isNav) return new Response('Forbidden', { status: 403 });
     return page(403, rec.title, `<h1>この資料は閲覧できません</h1>
     <p>${esc(rec.user ?? '')} さんには、この資料の閲覧権限がありません。別のユーザでログインする場合はログアウトしてください。</p>
-    <p><a href="${BASE}">資料一覧へ</a> · <a href="${BASE}?logout">ログアウト</a></p>`);
+    <p><a href="${BASE}">資料一覧へ</a> · <a href="${BASE}?logout">ログアウト</a></p>`, rec);
   }
   if (slash < 0 && isNav) return Response.redirect(url.pathname + '/' + url.search, 301);
 
@@ -88,6 +92,7 @@ async function handle(req, url, rel) {
       await dropKeys();
       return isNav ? fetch(req) : new Response('Unauthorized', { status: 401 });
     }
+    if (isNav && typeOf(cand).startsWith('text/html')) body = withAnalytics(new TextDecoder().decode(body), rec);
     return new Response(body, {
       status: 200,
       headers: { 'Content-Type': typeOf(cand), 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' },
@@ -118,7 +123,7 @@ function renderIndex(rec) {
     <footer>${esc(rec.user ?? '')} でログイン中 · <a href="${BASE}?logout">ログアウト</a></footer>`;
 }
 
-function page(status, title, body) {
+function page(status, title, body, rec) {
   const html = `<!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${esc(title)}</title>
@@ -138,7 +143,7 @@ function page(status, title, body) {
   .who { color: var(--muted); font-size: .8rem; margin-left: .3rem; }
   p.admin { font-size: .85rem; }
 </style></head><body><main>${body}</main></body></html>`;
-  return new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+  return new Response(withAnalytics(html, rec), { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
 }
 
 // 探索するファイルの候補。ページ遷移なら SPA 用に上位の index.html へフォールバックする

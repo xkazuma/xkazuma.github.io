@@ -1,4 +1,39 @@
-import { defineConfig } from 'vitepress'
+import { writeFile, mkdir } from 'node:fs/promises'
+import path from 'node:path'
+import { defineConfig, type HeadConfig } from 'vitepress'
+
+// Google アナリティクス (GA4)。測定ID (G-XXXXXXXXXX) はビルド時の環境変数 GA_MEASUREMENT_ID から読む。
+// 本番ビルドでは GitHub のリポジトリ変数 GA_MEASUREMENT_ID を deploy.yml が渡す。未設定ならタグを出力しない。
+// VitePress のページ遷移（history.pushState）は GA4 の拡張計測「ブラウザの履歴イベントに基づくページの変更」で計測される。
+// /lectures/ 配下の授業資料には VitePress の <head> が入らないため、同じ測定IDを使う /lectures/analytics.js を
+// buildEnd で書き出し、ログイン画面と Service Worker（復号したページに差し込む）から読み込ませる。
+const gaId = process.env.GA_MEASUREMENT_ID?.trim()
+const gaHead: HeadConfig[] = gaId && /^G-[A-Z0-9]+$/.test(gaId)
+  ? [
+      ['script', { async: '', src: `https://www.googletagmanager.com/gtag/js?id=${gaId}` }],
+      ['script', {}, `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaId}');`],
+    ]
+  : []
+
+// 授業資料用の計測スクリプト。測定ID未設定なら何もしない空のスクリプトになる。
+const lecturesAnalyticsJs = gaHead.length
+  ? `// 授業資料ページ用 Google アナリティクス（.vitepress/config.mts が生成）
+(() => {
+  const id = ${JSON.stringify(gaId)};
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', id);
+})();
+`
+  : '// Google アナリティクスの測定ID が未設定のため、何もしない\n'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -13,7 +48,13 @@ export default defineConfig({
   ignoreDeadLinks: [/^\/lectures(\/|$)/],
   head: [
     ['meta', { name: 'theme-color', content: '#3f6f8f' }],
+    ...gaHead,
   ],
+  async buildEnd(siteConfig) {
+    const target = path.join(siteConfig.outDir, 'lectures', 'analytics.js')
+    await mkdir(path.dirname(target), { recursive: true })
+    await writeFile(target, lecturesAnalyticsJs)
+  },
   themeConfig: {
     siteTitle: 'xkzm.me',
     nav: [
