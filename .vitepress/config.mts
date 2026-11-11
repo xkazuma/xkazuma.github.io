@@ -5,8 +5,9 @@ import { defineConfig, type HeadConfig } from 'vitepress'
 // Google アナリティクス (GA4)。測定ID (G-XXXXXXXXXX) はビルド時の環境変数 GA_MEASUREMENT_ID から読む。
 // 本番ビルドでは GitHub のリポジトリ変数 GA_MEASUREMENT_ID を deploy.yml が渡す。未設定ならタグを出力しない。
 // VitePress のページ遷移（history.pushState）は GA4 の拡張計測「ブラウザの履歴イベントに基づくページの変更」で計測される。
-// /lectures/ 配下の授業資料には VitePress の <head> が入らないため、同じ測定IDを使う /lectures/analytics.js を
-// buildEnd で書き出し、ログイン画面と Service Worker（復号したページに差し込む）から読み込ませる。
+// /lectures/（授業資料）と /projects/（研究プロジェクトの資料）には VitePress の <head> が入らないため、
+// 同じ測定IDを使う /lectures/analytics.js と /projects/analytics.js を buildEnd で書き出し、
+// ログイン画面・Service Worker（復号したページに差し込む）・公開資料の HTML から読み込ませる。
 const gaId = process.env.GA_MEASUREMENT_ID?.trim()
 const gaHead: HeadConfig[] = gaId && /^G-[A-Z0-9]+$/.test(gaId)
   ? [
@@ -43,17 +44,19 @@ export default defineConfig({
   srcDir: 'src',
   cleanUrls: true,
   lastUpdated: true,
-  // 暗号化済みの授業資料 (Slidev SPA) は src/public/lectures/ 配下に静的ファイルとして置く。
-  // VitePress の Markdown ページではないため、デッドリンク判定から除外する。
-  ignoreDeadLinks: [/^\/lectures(\/|$)/],
+  // 授業資料・研究プロジェクトの資料 (Slidev SPA など) は src/public/lectures/・src/public/projects/ 配下に
+  // 静的ファイルとして置く。VitePress の Markdown ページではないため、デッドリンク判定から除外する。
+  ignoreDeadLinks: [/^\/(lectures|projects)(\/|$)/],
   head: [
     ['meta', { name: 'theme-color', content: '#3f6f8f' }],
     ...gaHead,
   ],
   async buildEnd(siteConfig) {
-    const target = path.join(siteConfig.outDir, 'lectures', 'analytics.js')
-    await mkdir(path.dirname(target), { recursive: true })
-    await writeFile(target, lecturesAnalyticsJs)
+    for (const dir of ['lectures', 'projects']) {
+      const target = path.join(siteConfig.outDir, dir, 'analytics.js')
+      await mkdir(path.dirname(target), { recursive: true })
+      await writeFile(target, lecturesAnalyticsJs)
+    }
   },
   themeConfig: {
     siteTitle: 'xkzm.me',

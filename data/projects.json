@@ -1,0 +1,10 @@
+[
+  {
+    "id": "example-project",
+    "title": "（例）研究プロジェクト名",
+    "period": "2026年度〜",
+    "description": "研究プロジェクトの概要。資料は公開資料（誰でも閲覧可）と限定公開資料（ログインが必要）に分けて置けます。",
+    "path": "/projects/example-project/",
+    "published": false
+  }
+]

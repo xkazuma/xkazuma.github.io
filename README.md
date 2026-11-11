@@ -43,6 +43,7 @@ data/
   research/*.json        研究業績（researchmap のエクスポートから変換して上書き）
   profile.json           CV ページ用のプロフィール（同上）
   courses.json           授業資料の一覧
+  projects.json          研究プロジェクトの資料の一覧
 scripts/
   import-researchmap.mjs researchmap エクスポート(zip/JSONL) → data/research/*.json・data/profile.json 変換
   lib/read-zip.mjs       パスワード付き zip の読み込み（依存なし）
@@ -50,7 +51,8 @@ src/                     ページ（Markdown）
   index.md  about.md  cv.md
   research/  activities/  teaching/
   public/                そのまま dist にコピーされる静的ファイル（CNAME など）
-    lectures/            授業資料（暗号化済み Slidev SPA）。VitePress の管轄外
+    lectures/            授業資料（暗号化済み Slidev SPA と公開資料）。VitePress の管轄外
+    projects/            研究プロジェクトの資料（同上）
 ```
 
 ## コンテンツの追加方法
@@ -109,4 +111,15 @@ researchmap の API は利用申請が前提のため使わず、**エクスポ�
 
 暗号化済みの資料は `src/public/lectures/` 配下に置きます（ビルド時に `/lectures/` へそのままコピー）。`/lectures/` は VitePress のルーティング対象外で、サイト内リンクは `target="_self"` で通常遷移させます。一覧は `data/courses.json` の `published: true` の項目が「授業」ページに表示されます。
 
+資料は「公開」（暗号化せずに置き、誰でも閲覧可）・「限定公開」（ログインが必要）・「非公開」（管理者のみ）に分けられます。公開資料は資料置き場の `public.json` に一覧され、「資料・成果物」ページの各授業の下に直接リンクが表示されます。
+
 授業資料のソースは private リポジトリ `xkazuma/xkazuma-lectures` にあり、そちらの CI が Slidev のビルドと暗号化を行って `src/public/lectures/` に push します。暗号化の仕組みと使い方は [tools/lecture-vault/README.md](tools/lecture-vault/README.md) を参照してください。
+
+### 研究プロジェクトの資料
+
+研究プロジェクトごとの資料は `/projects/<project-id>/` に置きます（`src/public/projects/`、仕組みは授業資料と同じ）。ソースは `xkazuma/xkazuma-lectures` の `projects/<project-id>/project.json` です。
+研究ページの「研究プロジェクトの資料」には、`data/projects.json` の `published: true` の項目が表示されます。
+
+```json
+{ "id": "<project-id>", "title": "プロジェクト名", "period": "2026年度〜", "description": "概要（任意）", "path": "/projects/<project-id>/", "published": true }
+```

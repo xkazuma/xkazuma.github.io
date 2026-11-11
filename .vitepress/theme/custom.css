@@ -37,3 +37,9 @@ ul.xk-list, .vp-doc ul.xk-list { list-style: none; padding: 0 !important; margin
 }
 .vp-doc ol.xk-cv-pubs { padding-left: 2.2rem; }
 .vp-doc ol.xk-cv-pubs > li { margin: .45rem 0; line-height: 1.6; }
+
+/* 資料置き場（授業・研究プロジェクト）の公開資料リスト */
+.vp-doc ul.xk-materials { margin: .4rem 0 .2rem; padding-left: 1.2rem; font-size: .92rem; }
+.vp-doc ul.xk-materials > li { margin: .15rem 0; }
+.xk-access { font-size: .7rem; margin-left: .4rem; padding: 0 .4rem; border-radius: 999px; vertical-align: middle; }
+.xk-access-open { background: var(--vp-c-green-soft); color: var(--vp-c-green-1); }

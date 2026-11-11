@@ -21,7 +21,7 @@ features:
     link: /business/
     linkText: 事業を見る
   - title: 資料
-    details: 授業資料など。受講者向けの限定公開資料もここから閲覧できます。
+    details: 授業資料など。公開資料に加えて、受講者向けの限定公開資料もここから閲覧できます。
     link: /teaching/
     linkText: 資料を見る
 ---
