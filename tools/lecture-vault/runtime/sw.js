@@ -39,8 +39,13 @@ function idb(mode, fn) {
 const getKeys = () => idb('readonly', (s) => s.get(BASE));
 const dropKeys = () => idb('readwrite', (s) => s.delete(BASE));
 
-// 平文のまま配信するもの（ログイン画面から直接使う）
-const isPublic = (rel) => rel === 'sw.js' || rel === 'vault.json' || rel.startsWith('_v/');
+// 公開資料（暗号化せずに置いてある資料。encrypt.mjs が埋め込む）: [{dir, title}]
+const PUBLIC_DECKS = __VAULT_PUBLIC_DECKS_JSON__;
+const PUBLIC_DIRS = new Set(PUBLIC_DECKS.map((d) => d.dir));
+
+// 平文のまま配信するもの（ログイン画面から直接使うもの・公開資料）
+const isPublic = (rel) => rel === 'sw.js' || rel === 'vault.json' || rel === 'public.json' || rel.startsWith('_v/')
+  || PUBLIC_DIRS.has(rel.split('/')[0]);
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -104,19 +109,25 @@ async function handle(req, url, rel) {
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 function renderIndex(rec) {
-  const entries = Object.entries(rec.decks).sort(([a], [b]) => a.localeCompare(b));
+  // ログイン中のユーザが見られる限定公開資料と、誰でも見られる公開資料をまとめて並べる
+  const entries = [
+    ...Object.entries(rec.decks),
+    ...PUBLIC_DECKS.filter((d) => !(d.dir in rec.decks)).map((d) => [d.dir, { title: d.title, public: true }]),
+  ].sort(([a], [b]) => a.localeCompare(b));
   const status = (d) => {
-    if (!rec.admin || !Array.isArray(d.users)) return '';
+    if (d.public) return ' <span class="tag open">公開</span>';
+    if (!rec.admin || !Array.isArray(d.users)) return ' <span class="tag pub">限定公開</span>';
     return d.users.length
-      ? ` <span class="tag pub">公開中</span> <span class="who">${esc(d.users.join(', '))}</span>`
+      ? ` <span class="tag pub">限定公開</span> <span class="who">${esc(d.users.join(', '))}</span>`
       : ' <span class="tag priv">非公開</span> <span class="who">管理者のみ</span>';
   };
   const items = entries
     .map(([dir, d]) => `<li><a href="${BASE}${encodeURIComponent(dir)}/" target="_blank" rel="noopener">${esc(d.title || dir)}</a>${status(d)}</li>`)
     .join('');
-  const pub = entries.filter(([, d]) => Array.isArray(d.users) && d.users.length).length;
+  const restricted = entries.filter(([, d]) => !d.public && Array.isArray(d.users) && d.users.length).length;
+  const priv = entries.filter(([, d]) => !d.public && Array.isArray(d.users) && !d.users.length).length;
   const summary = rec.admin
-    ? `<p class="admin">管理者として表示しています。公開中 ${pub} 件・非公開 ${entries.length - pub} 件</p>`
+    ? `<p class="admin">管理者として表示しています。公開 ${PUBLIC_DECKS.length} 件・限定公開 ${restricted} 件・非公開 ${priv} 件</p>`
     : '';
   return `<h1>${esc(rec.title)}</h1>${summary}
     <ul>${items || '<li>閲覧できる資料はまだありません。</li>'}</ul>
@@ -128,8 +139,8 @@ function page(status, title, body, rec) {
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>
-  :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --link: #2563eb; --pub-bg: #dcfce7; --pub-fg: #166534; --priv-bg: #e7e5e4; --priv-fg: #44403c; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --link: #93c5fd; --pub-bg: #14532d; --pub-fg: #bbf7d0; --priv-bg: #44403c; --priv-fg: #e7e5e4; } }
+  :root { --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --link: #2563eb; --pub-bg: #dcfce7; --pub-fg: #166534; --priv-bg: #e7e5e4; --priv-fg: #44403c; --open-bg: #dbeafe; --open-fg: #1e40af; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --link: #93c5fd; --pub-bg: #14532d; --pub-fg: #bbf7d0; --priv-bg: #44403c; --priv-fg: #e7e5e4; --open-bg: #1e3a8a; --open-fg: #bfdbfe; } }
   body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
   main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem; }
   h1 { font-size: 1.6rem; margin: 0 0 1.5rem; }
@@ -140,6 +151,7 @@ function page(status, title, body, rec) {
   .tag { display: inline-block; margin-left: .5rem; padding: 0 .5rem; border-radius: 999px; font-size: .75rem; line-height: 1.6; vertical-align: middle; }
   .tag.pub { background: var(--pub-bg); color: var(--pub-fg); }
   .tag.priv { background: var(--priv-bg); color: var(--priv-fg); }
+  .tag.open { background: var(--open-bg); color: var(--open-fg); }
   .who { color: var(--muted); font-size: .8rem; margin-left: .3rem; }
   p.admin { font-size: .85rem; }
 </style></head><body><main>${body}</main></body></html>`;

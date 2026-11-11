@@ -20,12 +20,19 @@
     button:disabled { opacity: .6; cursor: progress; }
     #msg { min-height: 1.4em; margin-top: 1rem; font-size: .85rem; color: var(--err); }
     #msg.info { color: var(--muted); }
+    section.public { margin: 1.2rem 0 2rem; }
+    section.public h2, h2.login { font-size: 1rem; margin: 0 0 .5rem; }
+    section.public ul { margin: 0; padding-left: 1.2rem; line-height: 1.9; }
+    section.public a { color: inherit; }
   </style>
 </head>
 <body>
   <main>
     <h1>__VAULT_TITLE__</h1>
-    <p class="lead">この資料は受講者限定です。配布されたユーザ名とパスワードを入力してください。</p>
+    __VAULT_PUBLIC_LIST__
+    <div id="login"__VAULT_LOGIN_ATTR__>
+    <h2 class="login">限定公開資料</h2>
+    <p class="lead">限定公開の資料は、配布されたユーザ名とパスワードでログインすると閲覧できます。</p>
     <form id="f" autocomplete="on">
       <label for="u">ユーザ名</label>
       <input id="u" name="username" autocomplete="username" required>
@@ -34,6 +41,7 @@
       <button id="b" type="submit">ログイン</button>
       <div id="msg" role="status"></div>
     </form>
+    </div>
     <noscript>JavaScript を有効にしてください。</noscript>
   </main>
   <script type="module">

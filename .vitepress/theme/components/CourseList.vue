@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import courses from '../../../data/courses.json'
+import MaterialLinks from './MaterialLinks.vue'
 
 // 年度の新しい順に並べる（年度の数字が同じなら courses.json の順のまま）
 const year = (term: string) => Number(term.match(/\d{4}/)?.[0] ?? 0)
@@ -18,6 +19,7 @@ const published = courses
       <a class="xk-title" :href="c.path" target="_self">{{ c.title }}</a>
       <span class="xk-tags"><span class="xk-tag">{{ c.term }}</span></span>
       <p v-if="c.description" class="xk-meta">{{ c.description }}</p>
+      <MaterialLinks :path="c.path" />
     </li>
   </ul>
   <p v-else class="xk-empty">公開中の授業資料はまだありません。</p>

@@ -14,15 +14,19 @@
 //     "admins": ["owner"],                            // 公開・非公開にかかわらず全資料を見られるユーザ（任意）
 //     "decks": {
 //       "05-exam": { "users": ["alice"] },             // この資料だけ見られるユーザを上書き
-//       "06-extra": { "users": ["alice", "carol"], "keyVersion": 2 }
+//       "06-extra": { "users": ["alice", "carol"], "keyVersion": 2 },
+//       "07-handout": { "public": true }               // 公開資料: 暗号化せず、誰でもログインなしで見られる
 //     }
 //   }
+// トップレベルの "public": true で全資料を公開資料にでき、資料側の "public": false で限定公開に戻せる。
 // keyVersion を上げるとその資料だけ鍵が変わる（その資料からユーザを外したときに使う）。
 // 管理者（--admins / 環境変数 LECTURE_ADMINS をカンマ区切りで、または course.json の admins）は
 // users が空の資料（非公開）も含めて全資料を見られ、資料一覧に公開状態と閲覧ユーザが表示される。
 //
-// 出力（すべて公開されても平文は含まれない）:
-//   <out>/index.html, <out>/<deck>/index.html  ログイン画面
+// 出力（公開資料を除き、平文は含まれない）:
+//   <out>/index.html, <out>/<deck>/index.html  ログイン画面（公開資料の一覧も載せる）
+//   <out>/<public-deck>/...                    公開資料（平文のまま。Service Worker は素通しする）
+//   <out>/public.json                          公開資料の一覧（サイト本体のビルドが資料ページに載せる）
 //   <out>/sw.js                                復号用 Service Worker（scope = base）
 //   <out>/vault.json                           ユーザごとのキースロット（見られる資料の鍵だけを包む）
 //   <out>/_v/<hmac>                            暗号化されたファイル本体（ファイル名も HMAC で秘匿）
@@ -152,10 +156,39 @@ await fs.mkdir(path.join(outDir, '_v'), { recursive: true });
 
 const grants = new Map(); // user -> [{dir, title, key}]
 const published = [];
+const publicDecks = []; // [{dir, title}]
 let fileCount = 0;
+let publicFileCount = 0;
+const analyticsPath = new URL('../analytics.js', `https://x${base}`).pathname;
+const deckTitle = async (dir, dc) => {
+  const html = await fs.readFile(path.join(inDir, dir, 'index.html'), 'utf8');
+  return (dc.title ?? html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '').trim().replace(/ - Slidev$/, '') || dir;
+};
 for (const dir of deckDirs) {
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(dir)) fail(`資料名 "${dir}" は英数字・ハイフン・ドット・アンダースコアにしてください`);
   const dc = deckConfig[dir] ?? {};
+  if (dc.public ?? config.public ?? false) {
+    // 公開資料: 暗号化せずそのまま置く（ログイン不要）。HTML にはアクセス解析を差し込む。
+    const files = await walk(path.join(inDir, dir));
+    if (!files.includes('index.html')) {
+      warn(`公開資料 "${dir}" に index.html がないので公開しません`);
+      continue;
+    }
+    for (const rel of files) {
+      const src = path.join(inDir, dir, rel);
+      const dst = path.join(outDir, dir, rel);
+      await fs.mkdir(path.dirname(dst), { recursive: true });
+      if (/\.html?$/i.test(rel)) {
+        const html = await fs.readFile(src, 'utf8');
+        await fs.writeFile(dst, html.replace(/<\/head>/i, `<script async src="${analyticsPath}"></script></head>`));
+      } else {
+        await fs.copyFile(src, dst);
+      }
+      publicFileCount++;
+    }
+    publicDecks.push({ dir, title: await deckTitle(dir, dc) });
+    continue;
+  }
   const users = [...new Set(dc.users ?? defaultUsers)];
   // 管理者以外に見られるユーザがいれば「公開」、いなければ「非公開」（管理者だけが見られる）
   const viewers = users.filter((u) => !admins.includes(u));
@@ -185,8 +218,7 @@ for (const dir of deckDirs) {
     await fs.writeFile(path.join(outDir, '_v', name), Buffer.concat([iv, Buffer.from(ct)]));
     fileCount++;
   }
-  const html = await fs.readFile(path.join(inDir, dir, 'index.html'), 'utf8');
-  const title = (dc.title ?? html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '').trim().replace(/ - Slidev$/, '') || dir;
+  const title = await deckTitle(dir, dc);
   for (const u of readers) {
     if (!grants.has(u)) grants.set(u, []);
     // 公開状態と閲覧ユーザは管理者のスロットにだけ入れる（受講者には他の受講者名を見せない）
@@ -214,19 +246,34 @@ await fs.writeFile(path.join(outDir, 'vault.json'), JSON.stringify(vault));
 
 // --- ログイン画面と Service Worker ---------------------------------------------
 const shellTpl = await fs.readFile(path.join(here, 'runtime', 'shell.html'), 'utf8');
+// 公開資料の一覧はログイン画面にそのまま載せる（ログインしなくても見られる）
+const publicListHtml = publicDecks.length
+  ? `<section class="public"><h2>公開資料</h2><ul>${publicDecks
+      .map((d) => `<li><a href="${escapeHtml(base + encodeURIComponent(d.dir))}/">${escapeHtml(d.title)}</a></li>`)
+      .join('')}</ul></section>`
+  : '';
 const shell = shellTpl
   .replaceAll('__VAULT_BASE_JSON__', JSON.stringify(base))
-  .replaceAll('__VAULT_TITLE__', escapeHtml(courseTitle));
+  .replaceAll('__VAULT_TITLE__', escapeHtml(courseTitle))
+  .replaceAll('__VAULT_PUBLIC_LIST__', publicListHtml)
+  // 限定公開の資料がない（公開資料だけの）場合はログインフォームを出さない
+  .replaceAll('__VAULT_LOGIN_ATTR__', published.length ? '' : ' hidden');
 for (const d of ['', ...published.map((p) => p.dir)]) {
   const target = path.join(outDir, d, 'index.html');
   await fs.mkdir(path.dirname(target), { recursive: true });
   await fs.writeFile(target, shell);
 }
-await fs.copyFile(path.join(here, 'runtime', 'sw.js'), path.join(outDir, 'sw.js'));
+const swTpl = await fs.readFile(path.join(here, 'runtime', 'sw.js'), 'utf8');
+await fs.writeFile(path.join(outDir, 'sw.js'), swTpl.replace('__VAULT_PUBLIC_DECKS_JSON__', JSON.stringify(publicDecks)));
+await fs.writeFile(
+  path.join(outDir, 'public.json'),
+  JSON.stringify({ title: courseTitle, base, decks: publicDecks, restricted: published.length > 0 }, null, 2) + '\n',
+);
 
-console.log(`lecture-vault: ${published.length} deck(s), ${fileCount} files encrypted, ${slots.length} user(s) -> ${outDir}`);
+console.log(`lecture-vault: 限定公開 ${published.length} 件（${fileCount} files 暗号化, ${slots.length} user(s)）、公開 ${publicDecks.length} 件（${publicFileCount} files）-> ${outDir}`);
 if (admins.length) console.log(`  管理者: ${admins.join(', ')}`);
-for (const p of published) console.log(`  ${p.dir}: ${p.viewers.length ? `公開（${p.viewers.join(', ')}）` : '非公開（管理者のみ）'}`);
+for (const d of publicDecks) console.log(`  ${d.dir}: 公開（ログイン不要）`);
+for (const p of published) console.log(`  ${p.dir}: ${p.viewers.length ? `限定公開（${p.viewers.join(', ')}）` : '非公開（管理者のみ）'}`);
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);

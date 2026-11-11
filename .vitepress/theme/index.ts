@@ -3,6 +3,7 @@ import type { Theme } from 'vitepress'
 import ActivityList from './components/ActivityList.vue'
 import ResearchList from './components/ResearchList.vue'
 import CourseList from './components/CourseList.vue'
+import ProjectList from './components/ProjectList.vue'
 import CvProfile from './components/CvProfile.vue'
 import CvAchievements from './components/CvAchievements.vue'
 import './custom.css'
@@ -13,6 +14,7 @@ export default {
     app.component('ActivityList', ActivityList)
     app.component('ResearchList', ResearchList)
     app.component('CourseList', CourseList)
+    app.component('ProjectList', ProjectList)
     app.component('CvProfile', CvProfile)
     app.component('CvAchievements', CvAchievements)
   },
